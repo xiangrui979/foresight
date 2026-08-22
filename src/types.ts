@@ -45,8 +45,8 @@ export interface FactorConfig {
 
 export interface DeriveRoute {
   source: string
-  aspectDefault: Aspect
-  anchorDefault?: Anchor
+  aspect_default: Aspect
+  anchor_default?: Anchor
   target: 'memories' | 'user_doc'
   permission: 'derive' | 'root'
 }
@@ -110,6 +110,11 @@ export interface Policy {
     review_temporal: boolean
     review_conflicts: boolean
     include_session_timeline: boolean
+  }
+  dialectic: {
+    model: string
+    top_k: number
+    include_contradictions: boolean
   }
   server: {
     enabled: boolean
