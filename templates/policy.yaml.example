@@ -1,0 +1,157 @@
+# ForeSight policy — single source of truth for tunables (P1)
+#
+# Copy this file into your data directory (memoryRoot/policy.yaml)
+# and adjust. Version must match the plugin's POLICY_VERSION.
+#
+# Environment/plugin config (embed URL, db file, data dir) is NOT here —
+# that lives in the platform adapter (dsh cordis.patch.yml) or FORESIGHT_*
+# env vars. See README → Configuration.
+
+foresight:
+  policy_version: 3
+
+  permission:
+    # Who may write through the Root channel (as opposed to agent channel).
+    root_writers: ['root']
+    # Categories an agent may write directly, without Root confirmation.
+    agent_writable: ['session_log', 'task_progress']
+    # Whom to accept beta adjustments from.
+    beta_settable_by: ['root', 'agent']
+    user_doc_writer: 'root'
+
+  aspects:
+    gnomic:
+      storage: 'doc'
+      injection: 'always'
+      expiry: 'never'
+      render_anchor: false
+      renewable: false
+      default_ttl_days: 0
+      review_every_turns: 0
+    progressive:
+      storage: 'memory'
+      injection: 'conditional'
+      expiry: 'anchor'
+      render_anchor: true
+      renewable: true
+      default_ttl_days: 7
+      review_every_turns: 30
+      telicity:
+        values: ['bounded', 'unbounded']
+        unbounded_force_ttl: true
+      modalities:
+        prediction: { renew: false }
+        intention: { renew: true, review: 60 }
+    perfect:
+      storage: 'memory'
+      injection: 'conditional'
+      expiry: 'never'
+      render_anchor: 'short'
+      renewable: false
+      default_ttl_days: 0
+      review_every_turns: 0
+    prospective:
+      storage: 'memory'
+      injection: 'renewal'
+      expiry: 'ttl'
+      render_anchor: true
+      renewable: true
+      default_ttl_days: 30
+      review_every_turns: 30
+      modalities:
+        plan: { renew: true, review: 30 }
+        commitment: { renew: true, review: 60 }
+        prediction: { renew: true, review: 15 }
+
+  gate:
+    allowed_categories: ['session_log', 'task_progress', 'environment', 'project_state', 'preference', 'rule']
+    forbidden_categories: ['guessing', 'speculation']
+    forbidden_progressive: ['project_state']
+    llm_model: 'deepseek-v4-flash'
+    fallback: 'rules'
+
+  activation:
+    beta: 0.51
+    beta_observe: 0.5
+    suppression_epsilon: 0.05
+    conflict_sim_threshold: 0.69
+    temporal_decay_enabled: true
+    half_life_days: 90
+    base_weights:
+      root: 1.0
+      agent: 0.85
+      derive: 0.7
+    support:
+      evidence_half_life_days: 60
+      margin: 0.1
+      aspect_direction_prior: 1.5
+
+  retrieval:
+    top_k: 20
+    min_score: 0.05
+    candidates: 50
+    factors:
+      recency: { enabled: true, weight: 0.25 }
+      activation: { enabled: true, weight: 0.35 }
+      aspect: { enabled: true, weight: 0.25 }
+      link: { enabled: true, weight: 0.15 }
+
+  injection:
+    soul_section: 'foresight:soul'
+    user_section: 'foresight:user'
+    memories_section: 'foresight:memories'
+    user_budget_chars: 4000
+
+  derive:
+    enabled: true
+    trigger: 'turn'
+    every_n_turns: 20
+    model: 'deepseek-v4-flash'
+    max_new_per_batch: 4
+    routes:
+      - source: 'history'
+        aspect_default: 'perfect'
+        anchor_default: { type: 'none' }
+        target: 'memories'
+        permission: 'derive'
+      - source: 'user_trait'
+        aspect_default: 'gnomic'
+        target: 'user_doc'
+        permission: 'root'
+      - source: 'behavior_reflection'
+        aspect_default: 'perfect'
+        target: 'memories'
+        permission: 'derive'
+
+  nudge:
+    every_turns: 10
+    candidate_extraction: 'rules'
+    candidate_max: 3
+    llm_model: 'deepseek-v4-flash'
+    render: 'dialog'
+    review_temporal: true
+    review_conflicts: true
+    include_session_timeline: false
+
+  server:
+    enabled: false
+    host: '127.0.0.1'
+    port: 9288
+    token: ''
+
+  llm:
+    base_url: 'https://api.deepseek.com/v1'
+    model_classify: 'deepseek-v4-flash'
+    model_derive: 'deepseek-v4-flash'
+    model_dialectic: 'deepseek-v4-flash'
+    timeout_ms: 60000
+    max_retries: 2
+
+  audit:
+    events_table: true
+    emit_session_events: true
+    log_file: 'audit.log'
+
+  consistency_check: true
+  chinese_markers:
+    bounded: ['完成', '结束', '通过']
