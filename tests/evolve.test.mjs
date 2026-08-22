@@ -238,8 +238,8 @@ test('conflict: resolveOnWrite suppresses new when old evidence wins (β=0.5 cli
   const vB = new Float32Array(768).fill(0.11)
   // give old two strong supports → eO > eN
   const old = mem(store, 'perfect', '用户是大学生', { type: 'point', start: '2024-09-01' }, 'agent', { embedding: vA })
-  const ev1 = mem(store, 'perfect', '用户 2023 年大二', { type: 'point', start: '2023-09-01' }, 'agent', { embedding: vA })
-  const ev2 = mem(store, 'perfect', '用户 2024 年在读', { type: 'point', start: '2024-06-01' }, 'agent', { embedding: vA })
+  const ev1 = mem(store, 'perfect', '用户 2023 年已完成第一学年', { type: 'point', start: '2023-09-01' }, 'agent', { embedding: vA })
+  const ev2 = mem(store, 'perfect', '用户 2024 年仍在该阶段', { type: 'point', start: '2024-06-01' }, 'agent', { embedding: vA })
   store.insertLink(ev1.id, old.id, 'supports', 'agent')
   store.insertLink(ev2.id, old.id, 'supports', 'agent')
   const n = mem(store, 'perfect', '用户是研究生', { type: 'point', start: '2026-09-01' }, 'agent', { embedding: vB })
