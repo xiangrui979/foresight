@@ -110,6 +110,9 @@ export interface Policy {
     review_temporal: boolean
     review_conflicts: boolean
     include_session_timeline: boolean
+    /** Opt-in: prediction due → auto-verify (LLM) → perfect/soft-delete/extend.
+     *  false (default) keeps the review-question behavior. */
+    auto_resolve_prediction?: boolean
   }
   dialectic: {
     model: string

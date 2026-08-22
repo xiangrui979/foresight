@@ -39,6 +39,8 @@ export interface NudgeStore {
   listConversationsSince?(sessionId: string, createdAfter: number, limit?: number): Array<{ id: number; peer: string; content: string; createdAt: number }>
   listRecentUserTexts?(since: number, limit?: number): string[]
   getMemory?(id: string): Memory | null
+  updateMemory?(id: string, patch: Partial<Pick<Memory, 'content' | 'aspect' | 'status' | 'metadata' | 'activation' | 'baseWeight' | 'anchor' | 'category' | 'telicity' | 'modality'>>): Memory | null
+  softDelete?(id: string): boolean
   emit?(type: string, target: string | null, detail: Record<string, unknown> | null): void
 }
 
@@ -307,6 +309,93 @@ export function renderNudgeText(opts: {
   return lines.join('\n')
 }
 
+// ── prediction auto-resolve (`policy.nudge.auto_resolve_prediction`) ──
+//
+// Opt-in. When enabled, predictions at/after their predict_by date are
+// adjudicated mechanically on each nudge tick instead of being queued as a
+// review question:
+//   fulfilled  → aspect=perfect (完成体归档), verdict recorded in metadata
+//   refuted    → soft delete (row retained), verdict recorded first
+//   uncertain  → predict_by extended by AUTO_RESOLVE_EXTEND_DAYS (no data loss)
+// LLM unavailable / JSON parse failure / missing write hooks → 'uncertain'
+// (conservative: never delete on insufficient evidence).
+
+export type PredictionVerdict = 'fulfilled' | 'refuted' | 'uncertain'
+
+export interface ResolveAction {
+  memoryId: string
+  verdict: PredictionVerdict
+  action: 'perfect' | 'soft_delete' | 'extend'
+}
+
+const AUTO_RESOLVE_EXTEND_DAYS = 7
+
+/** Prospective prediction memories at/after their predict_by date. */
+function duePredictions(deps: NudgeDeps): Memory[] {
+  const out: Memory[] = []
+  for (const m of deps.store.listByAspectStatus('prospective', 'active')) {
+    if (m.modality !== 'prediction') continue
+    const predictBy = m.metadata?.predict_by as string | undefined
+    if (!predictBy || Number.isNaN(Date.parse(predictBy))) continue
+    if (deps.now >= Date.parse(predictBy)) out.push(m)
+  }
+  return out
+}
+
+async function verdictFor(deps: NudgeDeps, m: Memory): Promise<PredictionVerdict> {
+  if (!deps.llm) return 'uncertain'
+  try {
+    const r = await deps.llm.call({
+      model: deps.policy.nudge.llm_model ?? deps.policy.llm.model_classify,
+      system:
+        '你是预测验证器。给定一条预测记忆及其判定日，判断预测是否已实现。' +
+        '只输出 JSON：{"verdict":"fulfilled"|"refuted"|"uncertain","reason":"..."}。' +
+        '证据不足、无法确认现实状态时，必须输出 uncertain。',
+      user: `预测内容：${m.content}\n判定日：${(m.metadata?.predict_by as string) ?? ''}`,
+      json: true,
+      maxTokens: 256,
+    })
+    const v = (r.json as { verdict?: unknown } | null)?.verdict
+    return v === 'fulfilled' || v === 'refuted' || v === 'uncertain' ? v : 'uncertain'
+  } catch {
+    return 'uncertain'
+  }
+}
+
+export async function resolvePredictionDues(deps: NudgeDeps): Promise<ResolveAction[]> {
+  if (deps.policy.nudge.auto_resolve_prediction !== true) return []
+  if (!deps.store.updateMemory) return []
+  const actions: ResolveAction[] = []
+  for (const m of duePredictions(deps)) {
+    const verdict = await verdictFor(deps, m)
+    const metadata = { ...(m.metadata ?? {}) }
+    const resolvedAt = new Date(deps.now).toISOString()
+    if (verdict === 'fulfilled') {
+      const updated = deps.store.updateMemory(m.id, {
+        aspect: 'perfect',
+        metadata: { ...metadata, verdict: 'fulfilled', resolved_by: 'nudge-auto', resolved_at: resolvedAt },
+      })
+      deps.store.emit?.('prediction.fulfilled', m.id, { memoryId: m.id })
+      actions.push({ memoryId: m.id, verdict, action: updated ? 'perfect' : 'extend' })
+    } else if (verdict === 'refuted') {
+      deps.store.updateMemory(m.id, {
+        metadata: { ...metadata, verdict: 'refuted', resolved_by: 'nudge-auto', resolved_at: resolvedAt },
+      })
+      const ok = deps.store.softDelete?.(m.id) ?? false
+      deps.store.emit?.('prediction.refuted', m.id, { memoryId: m.id })
+      actions.push({ memoryId: m.id, verdict, action: ok ? 'soft_delete' : 'extend' })
+    } else {
+      const newPredictBy = new Date(deps.now + AUTO_RESOLVE_EXTEND_DAYS * DAY_MS).toISOString()
+      deps.store.updateMemory(m.id, {
+        metadata: { ...metadata, verdict: 'uncertain', resolved_by: 'nudge-auto', resolved_at: resolvedAt, predict_by: newPredictBy },
+      })
+      deps.store.emit?.('prediction.extended', m.id, { memoryId: m.id, predict_by: newPredictBy })
+      actions.push({ memoryId: m.id, verdict, action: 'extend' })
+    }
+  }
+  return actions
+}
+
 // ── main entry ───────────────────────────────────────────────────────
 
 export function buildNudge(deps: NudgeDeps): NudgeResult {
@@ -322,6 +411,9 @@ export async function buildNudgeAsync(deps: NudgeDeps): Promise<NudgeResult> {
   if (every <= 0 || deps.turnCount <= 0 || deps.turnCount % every !== 0) {
     return { trigger: false, text: null, reviewItems: [] }
   }
+  // Auto-resolve first so newly adjudicated memories drop out of the review
+  // queue before review items are collected.
+  await resolvePredictionDues(deps)
   return buildNudgeCore(deps, await collectCandidatesAsync(deps))
 }
 

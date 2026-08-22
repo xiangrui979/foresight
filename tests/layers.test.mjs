@@ -36,7 +36,7 @@ function makePolicy(withServer = false) {
       { source: 'conclusion', aspect_default: 'perfect', target: 'memories', permission: 'derive' },
       { source: 'user_trait', aspect_default: 'gnomic', target: 'user_doc', permission: 'root' },
     ] },
-    nudge: { every_turns: 3, candidate_extraction: 'rules', candidate_max: 3, llm_model: 'test', render: 'dialog', review_temporal: true, review_conflicts: true, include_session_timeline: false },
+    nudge: { every_turns: 3, candidate_extraction: 'rules', candidate_max: 3, llm_model: 'test', render: 'dialog', review_temporal: true, review_conflicts: true, include_session_timeline: false, auto_resolve_prediction: false },
     dialectic: { model: 'test', top_k: 3, include_contradictions: true },
     server: { enabled: withServer, host: '127.0.0.1', port: 0, token: 'test-token' },
     llm: { base_url: 'http://localhost', model_classify: 'test', model_derive: 'test', model_dialectic: 'test', timeout_ms: 1000, max_retries: 0 },
@@ -160,6 +160,97 @@ test('nudge: rules candidate extraction pattern', () => {
   const hits = extractCandidatesByRules(['以后不要改生产配置', '本文档随便写', '配置在 /opt/app/config.yaml 里'], 2)
   assert.equal(hits.length, 2)
   assert.ok(hits[0].includes('以后'))
+})
+
+// ── nudge: prediction auto-resolve (policy.nudge.auto_resolve_prediction) ──
+
+function mkDuePrediction(store) {
+  return store.insertMemory({
+    content: '预测：用户论文初稿将于 2026-08-20 完成',
+    aspect: 'prospective',
+    modality: 'prediction',
+    anchor: { type: 'none' },
+    source: 'agent',
+    metadata: { predict_by: '2000-01-01T00:00:00.000Z' },
+  })
+}
+
+test('nudge: auto_resolve off (default) → due prediction stays a review question', async () => {
+  const p = makePolicy() // auto_resolve_prediction: false
+  const { s, store } = mkStore()
+  const m = mkDuePrediction(store)
+  const r = await buildNudgeAsync({
+    store, policy: p, now: Date.now(), turnCount: 3, sessionStartTs: 0,
+    llm: fakeLlm({ verdict: 'fulfilled' }),
+  })
+  assert.ok(r.reviewItems.some((i) => i.type === 'prospective' && i.memoryId === m.id))
+  const after = store.getMemory(m.id)
+  assert.equal(after.aspect, 'prospective')
+  assert.equal(after.status, 'active')
+  closeDatabase(s)
+})
+
+test('nudge: auto_resolve on + fulfilled → 转完成体 perfect', async () => {
+  const p = makePolicy()
+  p.nudge.auto_resolve_prediction = true
+  const { s, store } = mkStore()
+  const m = mkDuePrediction(store)
+  const r = await buildNudgeAsync({
+    store, policy: p, now: Date.now(), turnCount: 3, sessionStartTs: 0,
+    llm: fakeLlm({ verdict: 'fulfilled' }),
+  })
+  const after = store.getMemory(m.id)
+  assert.equal(after.aspect, 'perfect')
+  assert.equal(after.metadata.verdict, 'fulfilled')
+  assert.equal(after.metadata.resolved_by, 'nudge-auto')
+  assert.ok(!r.reviewItems.some((i) => i.memoryId === m.id))
+  closeDatabase(s)
+})
+
+test('nudge: auto_resolve on + refuted → 证伪软删除（行保留、verdict 留痕）', async () => {
+  const p = makePolicy()
+  p.nudge.auto_resolve_prediction = true
+  const { s, store } = mkStore()
+  const m = mkDuePrediction(store)
+  await buildNudgeAsync({
+    store, policy: p, now: Date.now(), turnCount: 3, sessionStartTs: 0,
+    llm: fakeLlm({ verdict: 'refuted' }),
+  })
+  const after = store.getMemory(m.id)
+  assert.equal(after.status, 'deleted')
+  assert.equal(after.metadata.verdict, 'refuted')
+  closeDatabase(s)
+})
+
+test('nudge: auto_resolve on + uncertain → 延长判定日 7 天，不删不转', async () => {
+  const p = makePolicy()
+  p.nudge.auto_resolve_prediction = true
+  const { s, store } = mkStore()
+  const m = mkDuePrediction(store)
+  const now = Date.now()
+  await buildNudgeAsync({
+    store, policy: p, now, turnCount: 3, sessionStartTs: 0,
+    llm: fakeLlm({ verdict: 'uncertain' }),
+  })
+  const after = store.getMemory(m.id)
+  assert.equal(after.aspect, 'prospective')
+  assert.equal(after.status, 'active')
+  assert.equal(after.metadata.verdict, 'uncertain')
+  assert.ok(Date.parse(after.metadata.predict_by) >= now + 7 * 86_400_000 - 1000)
+  closeDatabase(s)
+})
+
+test('nudge: auto_resolve on + no LLM → 保守延长，绝不删除', async () => {
+  const p = makePolicy()
+  p.nudge.auto_resolve_prediction = true
+  const { s, store } = mkStore()
+  const m = mkDuePrediction(store)
+  await buildNudgeAsync({ store, policy: p, now: Date.now(), turnCount: 3, sessionStartTs: 0 })
+  const after = store.getMemory(m.id)
+  assert.equal(after.aspect, 'prospective')
+  assert.equal(after.status, 'active')
+  assert.equal(after.metadata.verdict, 'uncertain')
+  closeDatabase(s)
 })
 
 // ── observer ─────────────────────────────────────────────────────────

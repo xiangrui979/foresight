@@ -133,6 +133,10 @@ foresight:
     review_temporal: true
     review_conflicts: true
     include_session_timeline: false
+    # true: 预测到期自动判定（LLM 裁决）——已实现→转完成体 / 未实现→证伪软删除 / 存疑→延长判定日 7 天。
+    #       LLM 不可用或证据不足时一律按“存疑”处理，绝不误删。
+    # false: 到期仅发问询提醒，由 agent/用户决定（默认，保守）。
+    auto_resolve_prediction: false
 
   server:
     enabled: false
