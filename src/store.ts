@@ -68,12 +68,14 @@ export class Store {
   constructor(
     private schema: Schema,
     private auditLogPath: string | null = null,
+    /** Injectable clock for tests; defaults to Date.now. */
+    private now: () => number = Date.now,
   ) {}
 
   // ── memories ────────────────────────────────────────────────────────
 
   insertMemory(input: MemoryInput): Memory {
-    const now = Date.now()
+    const now = this.now()
     const id = nanoid()
     this.schema.db
       .prepare(
@@ -118,7 +120,7 @@ export class Store {
     patch: Partial<Pick<Memory, 'content' | 'activation' | 'baseWeight' | 'status' | 'metadata' | 'aspect' | 'anchor' | 'category' | 'telicity' | 'modality'>>,
   ): Memory | null {
     const fields: string[] = []
-    const values: Record<string, unknown> = { id, updated_at: Date.now() }
+    const values: Record<string, unknown> = { id, updated_at: this.now() }
     if (patch.content !== undefined) { fields.push('content = @content'); values.content = patch.content }
     if (patch.aspect !== undefined) { fields.push('aspect = @aspect'); values.aspect = patch.aspect }
     if (patch.anchor !== undefined) { fields.push('anchor_json = @anchor_json'); values.anchor_json = JSON.stringify(patch.anchor) }
@@ -140,7 +142,7 @@ export class Store {
   softDelete(id: string): boolean {
     const r = this.schema.db
       .prepare(`UPDATE memories SET status='deleted', updated_at=? WHERE id=? AND status!='deleted'`)
-      .run(Date.now(), id)
+      .run(this.now(), id)
     this.schema.db.prepare(`DELETE FROM memories_vec WHERE id = ?`).run(id)
     return r.changes > 0
   }
@@ -166,7 +168,7 @@ export class Store {
     const buf = Buffer.from(vec.buffer)
     const r = this.schema.db
       .prepare(`UPDATE memories SET embedding = ?, updated_at = ? WHERE id = ?`)
-      .run(buf, Date.now(), id)
+      .run(buf, this.now(), id)
     if (r.changes === 0) return false
     this.schema.db.prepare(`DELETE FROM memories_vec WHERE id = ?`).run(id)
     this.schema.db.prepare(`INSERT INTO memories_vec (id, embedding) VALUES (?, ?)`).run(id, buf)
@@ -178,7 +180,7 @@ export class Store {
   insertLink(src: string, dst: string, rel: LinkRel, source: string, weight = 1.0): number {
     const r = this.schema.db
       .prepare(`INSERT INTO links (src, dst, rel, weight, source, created_at) VALUES (?,?,?,?,?,?)`)
-      .run(src, dst, rel, weight, source, Date.now())
+      .run(src, dst, rel, weight, source, this.now())
     return Number(r.lastInsertRowid)
   }
 
@@ -193,7 +195,7 @@ export class Store {
   insertConversation(sessionId: string, peer: string, content: string): number {
     const r = this.schema.db
       .prepare(`INSERT INTO conversations (session_id, peer, content, created_at) VALUES (?,?,?,?)`)
-      .run(sessionId, peer, content, Date.now())
+      .run(sessionId, peer, content, this.now())
     const id = Number(r.lastInsertRowid)
     this.schema.db.prepare(`INSERT INTO conversations_fts (rowid, content) VALUES (?,?)`).run(id, content)
     this.schema.db.prepare(`INSERT INTO conversations_fts_zh (rowid, content) VALUES (?,?)`).run(id, content)
@@ -237,12 +239,12 @@ export class Store {
   emit(type: string, target: string | null, detail: Record<string, unknown> | null, clause?: string): void {
     this.schema.db
       .prepare(`INSERT INTO events (ts, type, target, detail, clause) VALUES (?,?,?,?,?)`)
-      .run(Date.now(), type, target, detail ? JSON.stringify(detail) : null, clause ?? null)
+      .run(this.now(), type, target, detail ? JSON.stringify(detail) : null, clause ?? null)
     if (this.auditLogPath) {
       try {
         fs.appendFileSync(
           this.auditLogPath,
-          JSON.stringify({ ts: Date.now(), type, target, detail, clause }) + '\n',
+          JSON.stringify({ ts: this.now(), type, target, detail, clause }) + '\n',
           'utf8',
         )
       } catch {
