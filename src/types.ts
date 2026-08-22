@@ -21,15 +21,16 @@ export interface Anchor {
   end?: string
 }
 
-/** Aspect → behavior lookup row (Policy P2). All scheduling logic reads this table, nothing else. */
+/** Aspect → behavior lookup row (Policy P2). All scheduling logic reads this
+ *  table, nothing else. Field names mirror policy.yaml (snake_case). */
 export interface AspectBehavior {
   storage: 'memory' | 'doc' | 'none'
   injection: 'always' | 'conditional' | 'renewal' | 'never'
   expiry: 'ttl' | 'anchor' | 'never'
-  renderAnchor: boolean | string
+  render_anchor: boolean | string
   renewable: boolean
-  defaultTtlDays: number
-  reviewEveryTurns: number
+  default_ttl_days: number
+  review_every_turns: number
   /** progressive only: telicity constraints */
   telicity?: { values: string[]; unbounded_force_ttl: boolean }
   /** prospective only: modality constraints */

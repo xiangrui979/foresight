@@ -1,0 +1,35 @@
+# @foresight/memory — dsh bundle patch.
+# Applied after dsh-base + dsh-web-app. Each `id` replaces the WHOLE config of
+# the same id (not a deep merge) — set all fields you need.
+#
+# memoryRoot: data directory. The plugin resolves it (see src/config.ts) as
+#   explicit config → FORESIGHT_MEMORY_DIR → platform default (%APPDATA%/
+#   foresight or ~/.local/share/foresight). Relative paths are allowed.
+# embedBaseUrl/embedModel: embedding backend (Ollama default; any
+#   OpenAI-compatible /api/embeddings endpoint works).
+#
+# To override per-machine without editing this file: set FORESIGHT_* env vars.
+
+- insert:
+    - id: foresight-core
+      name: '@foresight/memory'
+      config:
+        memoryRoot: './memory'
+        dbFile: 'foresight.db'
+        embedBaseUrl: 'http://localhost:11434'
+        embedModel: 'nomic-embed-text-v2-moe'
+
+    - id: foresight-tools
+      name: '@foresight/memory/tools'
+
+    - id: foresight-inject
+      name: '@foresight/memory/inject'
+
+    - id: foresight-nudge
+      name: '@foresight/memory/nudge'
+
+    - id: foresight-observer
+      name: '@foresight/memory/observer'
+
+    - id: foresight-server
+      name: '@foresight/memory/server'

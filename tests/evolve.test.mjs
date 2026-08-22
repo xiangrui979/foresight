@@ -24,7 +24,7 @@ function makePolicy(beta = 0.5) {
     aspects: {
       gnomic: { storage: 'doc', injection: 'always', expiry: 'never', render_anchor: false, renewable: false, default_ttl_days: 0, review_every_turns: 0 },
       progressive: { storage: 'memory', injection: 'conditional', expiry: 'anchor', render_anchor: true, renewable: true, default_ttl_days: 7, review_every_turns: 30, telicity: { values: ['bounded', 'unbounded'], unbounded_force_ttl: true } },
-      perfect: { storage: 'memory', injection: 'conditional', expiry: 'never', render_anchor: 'short', renewable: false, default_ttl_days: 0, review_every_turns: 0 },
+      perfect: { storage: 'memory', injection: 'conditional', expiry: 'never', render_anchor: 'always', renewable: false, default_ttl_days: 0, review_every_turns: 0 },
       prospective: { storage: 'memory', injection: 'renewal', expiry: 'ttl', render_anchor: true, renewable: true, default_ttl_days: 30, review_every_turns: 30, modalities: { plan: { renew: true } } },
     },
     gate: { allowed_categories: [], forbidden_categories: [], forbidden_progressive: [], llm_model: 'x', fallback: 'rules' },

@@ -33,9 +33,9 @@ export function behavior(policy: Policy, aspect: Aspect): AspectBehavior {
     storage: (a.storage as AspectBehavior['storage']) ?? 'memory',
     injection: (a.injection as AspectBehavior['injection']) ?? 'conditional',
     expiry: (a.expiry as AspectBehavior['expiry']) ?? 'never',
-    renderAnchor: a.renderAnchor ?? false,
+    render_anchor: (a.render_anchor as AspectBehavior['render_anchor']) ?? false,
     renewable: a.renewable ?? false,
-    defaultTtlDays: Number(a.default_ttl_days ?? 0),
-    reviewEveryTurns: Number(a.review_every_turns ?? 30),
+    default_ttl_days: Number(a.default_ttl_days ?? 0),
+    review_every_turns: Number(a.review_every_turns ?? 30),
   }
 }
