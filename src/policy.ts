@@ -8,6 +8,9 @@ import * as path from 'node:path'
 import type { Aspect, AspectBehavior, Policy } from './types.js'
 import { POLICY_VERSION } from './defaults.js'
 
+// Re-export domain types so consumers can `import type { Policy } from '@foresight/memory/policy'`
+export type { Aspect, AspectBehavior, Policy } from './types.js'
+
 export function loadPolicy(policyPath: string): Policy {
   const raw = yaml.load(fs.readFileSync(policyPath, 'utf8')) as { foresight: Policy }
   const p = raw.foresight

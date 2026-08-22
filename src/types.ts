@@ -30,6 +30,10 @@ export interface AspectBehavior {
   renewable: boolean
   defaultTtlDays: number
   reviewEveryTurns: number
+  /** progressive only: telicity constraints */
+  telicity?: { values: string[]; unbounded_force_ttl: boolean }
+  /** prospective only: modality constraints */
+  modalities?: Record<string, Record<string, unknown>>
 }
 
 export interface FactorConfig {

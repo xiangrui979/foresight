@@ -12,12 +12,13 @@ foresight:
 
   permission:
     # Who may write through the Root channel (as opposed to agent channel).
-    root_writers: ['root']
-    # Categories an agent may write directly, without Root confirmation.
-    agent_writable: ['session_log', 'task_progress']
+    root_writers: [root, system]
+    # What an agent may write (always gated). Agents cannot write SOUL/user/policy.
+    agent_writable: [memories]
     # Whom to accept beta adjustments from.
-    beta_settable_by: ['root', 'agent']
-    user_doc_writer: 'root'
+    beta_settable_by: [root]
+    # user.md is written exclusively by the deriver's user_trait route.
+    user_doc_writer: derive
 
   aspects:
     gnomic:
