@@ -17,6 +17,26 @@
       "types": "./lib/store.d.ts",
       "default": "./lib/store.js"
     },
+    "./tools": {
+      "types": "./lib/tools.d.ts",
+      "default": "./lib/tools.js"
+    },
+    "./inject": {
+      "types": "./lib/inject/render.d.ts",
+      "default": "./lib/inject/render.js"
+    },
+    "./observer": {
+      "types": "./lib/ingest/observer.d.ts",
+      "default": "./lib/ingest/observer.js"
+    },
+    "./nudge": {
+      "types": "./lib/nudge/nudge.d.ts",
+      "default": "./lib/nudge/nudge.js"
+    },
+    "./server": {
+      "types": "./lib/server/server.d.ts",
+      "default": "./lib/server/server.js"
+    },
     "./package.json": "./package.json"
   },
   "files": [

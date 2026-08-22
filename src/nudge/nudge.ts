@@ -425,3 +425,19 @@ export class NudgePlugin {
     }
   }
 }
+
+// ── cordis plugin entry (dsh loader convention: name + apply) ────────
+
+export const name = 'foresight-nudge'
+export const inject = ['foresight']
+
+/** dsh assembly: construct NudgePlugin from ctx.foresight and attach. */
+export function apply(ctx: unknown): () => void {
+  const fsight = (ctx as { foresight?: { store?: NudgeStore; policy?: Policy; llm?: LlmLike } }).foresight
+  if (!fsight?.store || !fsight.policy) {
+    throw new Error('foresight-nudge 需要 foresight 服务（@foresight/memory 主插件）')
+  }
+  const plugin = new NudgePlugin({ store: fsight.store, policy: fsight.policy, llm: fsight.llm })
+  plugin.attach(ctx)
+  return () => { /* nudge has no resource cleanup */ }
+}
