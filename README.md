@@ -4,6 +4,8 @@
 [![DeepSeek Harness](https://img.shields.io/badge/DeepSeek%20Harness-black?logo=deepseek)](https://github.com/deepseek-ai/deepseek-harness)
 [![License: MIT](https://img.shields.io/github/license/xiangrui979/foresight.svg)](LICENSE)
 
+**English** | [中文](README.zh-CN.md)
+
 **A temporal-aspect long-term memory plugin for [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (dsh).**
 
 Every memory carries explicit temporal semantics — a linguistic *aspect*
