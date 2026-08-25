@@ -3,6 +3,7 @@
 [![dsh-plugin](https://img.shields.io/badge/dsh--plugin-blue?logo=github)](https://github.com/topics/dsh-plugin)
 [![DeepSeek Harness](https://img.shields.io/badge/DeepSeek%20Harness-black?logo=deepseek)](https://github.com/deepseek-ai/deepseek-harness)
 [![License: MIT](https://img.shields.io/github/license/xiangrui979/foresight.svg)](LICENSE)
+![Status: experimental](https://img.shields.io/badge/status-experimental-yellow)
 
 **English** | [中文](README.zh-CN.md)
 
@@ -15,20 +16,52 @@ decay on anchor expiry, TTL fallback, renewal nudge, prospective review,
 prediction verification, and conflict resolution by evidence with a single
 conservative/aggressive knob (β).
 
+## The problem
+
+Long-term memory is a data-management problem, not a prompt-engineering one.
+Left unmanaged, agent memories tend to hit two familiar failure modes:
+
+**Stale injection.** A project that ended a month ago still competes for the
+injection budget as if it were current context.
+
+**Lost valid time.** "I did that yesterday" comes back as "just now" — nothing
+records when a memory is true, let alone when it stops being true.
+
+## Why it exists
+
 Unlike chat vendors' rolling memories, ForeSight treats memory as
 **scheduled first-class data**: expiration, injection eligibility, retrieval
 weighting and contradiction resolution all derive from one structured policy
 file (`policy.yaml`) — zero hardcoded behavior.
 
-## Why it exists
-
-Long-term memory is a data-management problem, not a prompt-engineering one.
-ForeSight applies the two axes that matter:
+ForeSight approaches this with two axes borrowed from linguistics:
 
 | Axis | Values | What it controls |
 |---|---|---|
 | 体 (aspect) | progressive / perfect / prospective / gnomic | lifecycle: expires, permanent, to-verify, never-injected |
-| 锚定 (anchor) | none / point / interval / open | when the statement is true (valid time) |
+| 锚 (anchor) | none / point / interval / open | when the statement is true (valid time) |
+
+In plain terms, **体** says *what stage a fact is at* — 进行体: "I am writing
+the report" (ongoing, ends someday → expires); 完成体: "the report is
+submitted" (concluded, permanent); 未然体: "due next week" (pending, gets
+verified later); 恒常体: "I drink coffee daily" (timeless — such facts belong
+in your SOUL.md/user.md profile, not the memory store). **锚** says *when it
+is true* — a point ("Aug 20"), an interval ("during my third year"), open
+("since March"), or none (timeless).
+
+A few design choices worth noting:
+
+- The aspect taxonomy draws on established linguistic notions, but it is a
+  deliberately minimal starting point rather than a complete theory — the
+  schema is configurable (`policy.yaml`) and expected to evolve with use.
+- The core is agent-agnostic: dsh is one adapter (`platforms/dsh`). Embedding
+  and LLM services are pluggable interfaces — the default is local Ollama, and
+  rules-based fallbacks keep the lifecycle running without a model at all.
+- The lifecycle is executed by mechanism, not by model judgment: expiry,
+  injection eligibility and conflict resolution are driven by policy; the
+  optional LLM is used for classification/derivation only. However, this is an
+  early exploratory implementation — the taxonomy, the policy model and the
+  mechanics are all under active revision.
 
 ## Requirements
 
