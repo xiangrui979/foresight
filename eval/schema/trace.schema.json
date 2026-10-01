@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://foresight.local/eval/schema/trace.schema.json",
+  "title": "ForeSight eval trace v2",
+  "type": "object",
+  "required": [
+    "run_id",
+    "system",
+    "bench",
+    "item_id",
+    "query",
+    "query_time_ms",
+    "channel",
+    "injected",
+    "candidate_count",
+    "budget_tokens",
+    "injected_tokens",
+    "answer",
+    "correct",
+    "judge",
+    "versions",
+    "cost",
+    "timing_ms"
+  ],
+  "properties": {
+    "run_id": { "type": "string", "minLength": 1 },
+    "system": { "type": "string", "minLength": 1 },
+    "bench": { "type": "string", "enum": ["longmemeval", "locomo", "timesuite", "smoke"] },
+    "variant": { "type": "string" },
+    "item_id": { "type": "string", "minLength": 1 },
+    "query": { "type": "string" },
+    "query_time_ms": { "type": "integer" },
+    "channel": { "type": "string", "enum": ["system_prompt", "tool_retrieval"] },
+    "injected": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["memory_id", "aspect", "anchor_type", "status", "stale_gt", "included"],
+        "properties": {
+          "memory_id": { "type": "string" },
+          "aspect": { "type": "string", "enum": ["progressive", "perfect", "prospective", "gnomic"] },
+          "anchor_type": { "type": "string", "enum": ["none", "point", "interval", "open"] },
+          "status": { "type": "string", "enum": ["active", "suppressed", "expired", "deleted"] },
+          "expires_at_ms": { "type": ["integer", "null"] },
+          "suppressed_by": { "type": ["string", "null"] },
+          "stale_gt": { "type": "boolean" },
+          "stale_reason": { "type": ["string", "null"] },
+          "created_at_ms": { "type": "integer" },
+          "age_days": { "type": "number" },
+          "score": { "type": "number" },
+          "tokens": { "type": "integer", "minimum": 0 },
+          "included": { "type": "boolean" }
+        },
+        "additionalProperties": true
+      }
+    },
+    "candidate_count": { "type": "integer", "minimum": 0 },
+    "budget_tokens": { "type": ["integer", "null"], "minimum": 0 },
+    "injected_tokens": { "type": "integer", "minimum": 0 },
+    "answer": { "type": ["string", "null"] },
+    "correct": { "type": ["boolean", "null"] },
+    "judge": {
+      "anyOf": [
+        { "type": "null" },
+        {
+          "type": "object",
+          "required": ["judge_id", "model", "prompt_hash", "label", "reason"],
+          "properties": {
+            "judge_id": { "type": "string" },
+            "model": { "type": "string" },
+            "prompt_hash": { "type": "string" },
+            "label": { "type": "string" },
+            "reason": { "type": "string" }
+          },
+          "additionalProperties": true
+        }
+      ]
+    },
+    "versions": {
+      "type": "object",
+      "required": [
+        "repo_commit",
+        "policy_version",
+        "config_hash",
+        "node",
+        "embed_model",
+        "llm_model",
+        "tokenizer",
+        "seed",
+        "stale_annotator"
+      ],
+      "properties": {
+        "repo_commit": { "type": "string" },
+        "policy_version": { "type": "integer" },
+        "config_hash": { "type": "string" },
+        "node": { "type": "string" },
+        "embed_model": { "type": "string" },
+        "llm_model": { "type": "string" },
+        "tokenizer": { "type": "string" },
+        "seed": { "type": ["integer", "null"] },
+        "stale_annotator": { "type": ["string", "null"] }
+      },
+      "additionalProperties": true
+    },
+    "cost": {
+      "type": "object",
+      "required": ["llm_calls", "prompt_tokens", "completion_tokens", "cache_hit"],
+      "anyOf": [{ "required": ["usd"] }, { "required": ["cny"] }],
+      "properties": {
+        "llm_calls": { "type": "integer", "minimum": 0 },
+        "prompt_tokens": { "type": "integer", "minimum": 0 },
+        "completion_tokens": { "type": "integer", "minimum": 0 },
+        "usd": { "type": "number", "minimum": 0 },
+        "cny": { "type": "number", "minimum": 0 },
+        "cache_hit": { "type": "boolean" }
+      },
+      "additionalProperties": true
+    },
+    "timing_ms": {
+      "type": "object",
+      "required": ["ingest", "retrieve", "answer"],
+      "properties": {
+        "ingest": { "type": "number", "minimum": 0 },
+        "retrieve": { "type": "number", "minimum": 0 },
+        "answer": { "type": "number", "minimum": 0 }
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}
