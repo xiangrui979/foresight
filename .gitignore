@@ -10,4 +10,5 @@ node_modules/
 eval/data/
 eval/results/raw/
 eval/results/*.tmp
+eval/.cache/
 

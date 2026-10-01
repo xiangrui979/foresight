@@ -143,9 +143,9 @@
 | Ollama | `nomic-embed-text-v2-moe`（tag + digest 于 Task 1.7/执行日回填） |
 | DeepSeek reader | `deepseek-v4-flash`（temperature 0） |
 | Judge | `gpt-4o`（不同源；兜底见 §4） |
-| judge prompt hash | Task 1.4 冻结并回填（文件名带 hash 前缀） |
+| judge prompt hash | 冻结文件 `eval/judge/42d5fff0-judge-correctness.md`（sha256 `42d5fff0dcb3…`）；`judge_id = gpt-4o@42d5fff0dcb3`（文件名前缀 = 内容 hash8，`judge.mjs` 强制校验） |
 | reader prompt hash | Task 1.4 冻结并回填 |
-| tokenizer | `cl100k_base`（tiktoken；版本回填） |
+| tokenizer | 目标 `cl100k_base`；本机未安装 tiktoken → 实际 `estimate@v1`（偏离已登记；若安装须 Changelog 并评估影响） |
 | config_hash | runner 每条结果记录（全部配置序列化 hash） |
 | retrieval.factors 权重 | `embed 0.4 / time 0.2 / activation 0.25 / links 0.15`（P1.2 冻结；主实验前不得更改） |
 | 价格表 | 见 §10（执行日复核，差异入 Changelog） |
@@ -298,6 +298,7 @@
 | 2026-10-01 | pre-reg-v1.2 | Task 0.7：§15 分类器语言决策门定稿（默认 A + G1 切换规则 + 成本影响 + P1.9 范围冻结） |
 | 2026-10-01 | pre-reg-v1.4 | Task 1.2：检索因子名对齐（embed/time/activation/links）+ 权重冻结（0.40/0.20/0.25/0.15）；`render_anchor` 值域接线（true/short/always/endpoint）；§13 decorative 清单定稿（全 policy 表面审计） |
 | 2026-10-01 | pre-reg-v1.5 | Task 1.3：trace 写入器 + token 计数（estimate@v1）+ 预算护栏接入 runner；`--selfcheck` 5 题离线端到端（真实 Store/search/render + ManualClock），运行时 SIR-i/SIR 与 `trace.mjs --sir` 复算一致（0.3333/0.2000） |
+| 2026-10-01 | pre-reg-v1.6 | Task 1.4：LLM 内容哈希缓存 + `--no-cache` + 退避重试 + usage 记账（`eval/lib/llm.mjs`）；judge 冻结机制（文件名 hash 前缀强制校验、篡改检测、可插拔）+ 官方 judge prompt 冻结 `eval/judge/42d5fff0-judge-correctness.md`（judge_id `gpt-4o@42d5fff0dcb3`） |
 | 2026-10-01 | pre-reg-v1.3 | Task 0.6 补测：seed 支持性探针实测完成（`deepseek-v4-flash`，seed=0 重放 3 次：`outputs_identical=false`、无接口错误 → `seed_effective`）；§4 回填；归档 `eval/results/seed-probe_deepseek-v4-flash.json`；C-extension 维持 seed 方案、§11.1 不变；Deviations「无 API key 未实测」偏离消解 |
 
 ## Deviations
