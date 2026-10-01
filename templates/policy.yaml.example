@@ -91,11 +91,14 @@ foresight:
     top_k: 20
     min_score: 0.05
     candidates: 50
+    # 因子名必须与 src/retrieve/factors.ts 的 FACTORS 注册表一致
+    # （embed/time/activation/links）；权重之和建议为 1.0。
+    # 冻结值见 eval/DECISIONS.md §7（主实验前不得更改）。
     factors:
-      recency: { enabled: true, weight: 0.25 }
-      activation: { enabled: true, weight: 0.35 }
-      aspect: { enabled: true, weight: 0.25 }
-      link: { enabled: true, weight: 0.15 }
+      embed: { enabled: true, weight: 0.4 }
+      time: { enabled: true, weight: 0.2 }
+      activation: { enabled: true, weight: 0.25 }
+      links: { enabled: true, weight: 0.15, spread_hops: 2, edge_decay: 0.5 }
 
   injection:
     soul_section: 'foresight:soul'

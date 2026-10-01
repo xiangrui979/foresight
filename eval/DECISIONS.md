@@ -147,6 +147,7 @@
 | reader prompt hash | Task 1.4 冻结并回填 |
 | tokenizer | `cl100k_base`（tiktoken；版本回填） |
 | config_hash | runner 每条结果记录（全部配置序列化 hash） |
+| retrieval.factors 权重 | `embed 0.4 / time 0.2 / activation 0.25 / links 0.15`（P1.2 冻结；主实验前不得更改） |
 | 价格表 | 见 §10（执行日复核，差异入 Changelog） |
 
 ---
@@ -221,20 +222,30 @@
 
 ---
 
-## 13. decorative / reserved 策略字段清单（C9）
+## 13. decorative / reserved 策略字段清单（C9，Task 1.2 定稿）
 
-> 原则：`policy.yaml` 每个配置字段必须有执行者，或显式登记为 **reserved/decorative**。Task 1.2 完成全 policy 表面一致性测试后在本节定稿（追加）；README/论文措辞同步降级为「已实现的策略字段」。
+> 原则：`policy.yaml` 每个配置字段必须有执行者，或显式登记为 **reserved/decorative**。以下为审计终稿；`tests/policy-consistency.test.mjs` 强制「模板每个叶子字段要么有执行者、要么出现在本节」。README/论文措辞同步降级为「已实现的策略字段」。
 
-**P0 已知候选**（待 Task 1.2 审计确认）：
+**decorative / reserved（无执行者，仅文档语义或 nudge 文案）**：
 
-| 字段 | 现状 | 处理 |
+| 字段 | 现状 | 说明 |
 |---|---|---|
-| `aspects.prospective.expiry: 'ttl'` | `expireCheck` 对非 progressive 直接返回 active → 不生效 | P1.2 接线或登记 decorative |
-| `aspects.*.render_anchor`（`true/'short'`） | `renderMemory` 只认 `'always'/'endpoint'` → 永不匹配 | P1.2 统一值域或登记 decorative |
-| `aspects.*.injection` | 仅 nudge 文案使用 | P1.2 接线或登记 decorative |
-| `aspects.*.storage` | 仅 nudge 文案使用 | P1.2 接线或登记 decorative |
-| `aspects.*.review_every_turns` | 需 Task 1.2 核对执行者 | 待审计 |
-| `gate.fallback` / `nudge.*` | 需 Task 1.2 核对执行者 | 待审计 |
+| `gate.fallback` | 无执行者 | 分类器兜底当前恒为 rules（P1.9 双语扩展后由代码决定）；该字段保留 |
+| `aspects.*.storage` | 仅 nudge 文案 | gnomic 的 doc 去向由 gate 拒写 + derive user_trait 路由实现，非本字段驱动 |
+| `aspects.*.injection` | 仅 nudge 文案 | 注入资格由 aspect 类型 + 生命周期（progressive 窗口）实现 |
+| `aspects.*.expiry` | 无执行者 | 过期语义在 `evolve/temporal` 按 aspect 硬编码（progressive 才过期，perfect/prospective 永不过期） |
+| `aspects.*.renewable`（progressive 已执行） | 其余三个未读 | `renewalDue` 只查 progressive |
+| `aspects.*.default_ttl_days`（progressive 已执行） | 其余三个未读 | TTL 只对 progressive 生效 |
+| `aspects.*.review_every_turns`（prospective 已执行） | 其余三个未读 | progressive 复审由 TTL 窗口驱动，不按 turn 数 |
+| `aspects.progressive.telicity.unbounded_force_ttl` | 无执行者 | unbounded 强制 TTL 在 `progressiveWindow` 硬编码 |
+| `aspects.*.modalities.*` | 无执行者 | 情态复审分支在 nudge 按 modality 硬编码 |
+| `derive.trigger` / `derive.every_n_turns` | 无执行者 | 当前由 session turnEnd 触发（observer），不按 N 轮 |
+| `nudge.render` | 无执行者 | 渲染恒为 dialog |
+| `llm.base_url` | 无执行者 | base URL 走 config 解析链（显式选项 → 环境变量 → defaults），policy 副本保留 |
+| `audit.events_table` / `audit.emit_session_events` | 无执行者 | events 表恒写；`log_file` 已执行 |
+| `consistency_check` / `chinese_markers.bounded` | 无执行者 | 一致性检查由测试承担；rules 中文标记编译在 `gate/classify.ts` |
+
+**因子权重（已执行，预注册冻结）**：`retrieval.factors` = `embed 0.4 / time 0.2 / activation 0.25 / links 0.15`（P1.2 起冻结；主实验前不得更改，见 §7）。
 
 ---
 
@@ -285,6 +296,7 @@
 | 2026-10-01 | pre-reg-v1 | 初次预注册（Task 0.1）；对应计划 v3.1 |
 | 2026-10-01 | pre-reg-v1.1 | Task 0.6：§14 十项开关 + 时间线目标冻结；seed 探针脚本交付（`eval/scripts/seed-probe.mjs`），实测 pending（无 API key，D19 替代方案已预注册于 §11.1） |
 | 2026-10-01 | pre-reg-v1.2 | Task 0.7：§15 分类器语言决策门定稿（默认 A + G1 切换规则 + 成本影响 + P1.9 范围冻结） |
+| 2026-10-01 | pre-reg-v1.4 | Task 1.2：检索因子名对齐（embed/time/activation/links）+ 权重冻结（0.40/0.20/0.25/0.15）；`render_anchor` 值域接线（true/short/always/endpoint）；§13 decorative 清单定稿（全 policy 表面审计） |
 | 2026-10-01 | pre-reg-v1.3 | Task 0.6 补测：seed 支持性探针实测完成（`deepseek-v4-flash`，seed=0 重放 3 次：`outputs_identical=false`、无接口错误 → `seed_effective`）；§4 回填；归档 `eval/results/seed-probe_deepseek-v4-flash.json`；C-extension 维持 seed 方案、§11.1 不变；Deviations「无 API key 未实测」偏离消解 |
 
 ## Deviations

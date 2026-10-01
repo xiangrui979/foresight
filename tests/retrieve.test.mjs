@@ -136,6 +136,26 @@ test('search: full shape returns hits sorted by score', async () => {
   closeDatabase(s)
 })
 
+test('search: f_embed participates in final score (C3 smoke)', async () => {
+  const p = makePolicy()
+  const { s, store } = mkStore()
+  const queryVec = new Float32Array(768).fill(0)
+  queryVec[0] = 1
+  const same = new Float32Array(768).fill(0)
+  same[0] = 1
+  const diff = new Float32Array(768).fill(0)
+  diff[1] = 1
+  const mSame = store.insertMemory({ content: '接口联调已完成', aspect: 'perfect', anchor: { type: 'point', start: '2026-06-15' }, source: 'agent', embedding: same })
+  const mDiff = store.insertMemory({ content: '接口联调的旧方案', aspect: 'perfect', anchor: { type: 'point', start: '2026-06-15' }, source: 'agent', embedding: diff })
+  const embed = { embedOne: async () => queryVec, embedBatch: async (t) => t.map(() => queryVec) }
+  const hits = await search('接口联调', store, embed, p, Date.parse('2026-07-01'), { topK: 10 })
+  const byId = new Map(hits.map((h) => [h.id, h]))
+  assert.ok(byId.has(mSame.id) && byId.has(mDiff.id), 'both candidates returned')
+  assert.ok(byId.get(mSame.id).factors.embed > byId.get(mDiff.id).factors.embed, 'embed factor differs')
+  assert.ok(byId.get(mSame.id).score > byId.get(mDiff.id).score, 'f_embed weight affects final score')
+  closeDatabase(s)
+})
+
 test('search: degraded shape (substring) works without embed/policy', async () => {
   const { s, store } = mkStore()
   em(store, 'perfect', '用户完成了接口联调', { type: 'point', start: '2026-06-15' })

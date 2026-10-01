@@ -99,14 +99,27 @@ export function structuralFilter(store: Store, opts: SearchOptions): Memory[] {
   return out
 }
 
-/** Anchor render (P2 table lookup: behavior(aspect).render_anchor). */
+/**
+ * Anchor render (P2 table lookup: behavior(aspect).render_anchor).
+ * Supported values (C9 value-domain alignment):
+ *   false / 'none' → plain; true / 'short' → short suffix;
+ *   'always' → absolute-time prefix; 'endpoint' → end suffix.
+ */
 export function renderMemory(m: Memory, policy: Policy): string {
-  const b = behavior(policy, m.aspect)
-  if (b.render_anchor === 'always' && m.anchor.start) {
+  const mode = behavior(policy, m.aspect).render_anchor
+  if (mode === 'always' && m.anchor.start) {
     return `在 ${m.anchor.start} 时：${m.content}`
   }
-  if (b.render_anchor === 'endpoint' && m.anchor.end) {
+  if (mode === 'endpoint' && m.anchor.end) {
     return `${m.content}（至 ${m.anchor.end}）`
+  }
+  if (mode === true || mode === 'short') {
+    if (m.anchor.type === 'interval' && m.anchor.end) {
+      return `${m.content}（至 ${m.anchor.end}）`
+    }
+    if (m.anchor.start) {
+      return `${m.content}（${m.anchor.start} 起）`
+    }
   }
   return m.content
 }

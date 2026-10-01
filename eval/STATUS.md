@@ -36,8 +36,8 @@
 
 | Task | 状态 | commit | 备注 |
 |---|---|---|---|
-| 1.1 Clock + 生命周期接线 + 过期统一 + UTC（C1/C2/C7/C8/C10/C11） | ✅ | `(next)` | 93/93（旧 80 + 新 13）；TZ=UTC / Asia/Shanghai 双跑通过；`Date.now()` 仅 `src/clock.ts`；nudge 重复实现删除；point 锚 TTL 修正；未然体证据通道；旧 gate 时区夹具 UTC 化（C8 语义） |
-| 1.2 检索因子对齐 + 全 policy 表面一致性（C3/C9） | ⬜ | — | shipped 模板 ↔ FACTORS 一致性测试 |
+| 1.1 Clock + 生命周期接线 + 过期统一 + UTC（C1/C2/C7/C8/C10/C11） | ✅ | `af5049b` | 93/93（旧 80 + 新 13）；TZ=UTC / Asia/Shanghai 双跑通过；`Date.now()` 仅 `src/clock.ts`；nudge 重复实现删除；point 锚 TTL 修正；未然体证据通道；旧 gate 时区夹具 UTC 化（C8 语义） |
+| 1.2 检索因子对齐 + 全 policy 表面一致性（C3/C9） | ✅ | `(next)` | 99/99；模板因子名对齐（embed/time/activation/links）+ 权重冻结 0.40/0.20/0.25/0.15；render_anchor 值域接线；全表面叶子审计（执行者或 §13 decorative）；DECISIONS §13 定稿 |
 | 1.3 Trace + token 记账 + 预算护栏 | ⬜ | — | runner 5 题自检 |
 | 1.4 LLM 缓存 + judge 基建（D1/D6） | ⬜ | — | 内容哈希缓存 + --no-cache |
 | 1.5 消融开关 + 7 系统 + 预算渲染（D8/C6/D17） | ⬜ | — | closedbook/render-budget |

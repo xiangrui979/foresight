@@ -30,9 +30,11 @@ records when a memory is true, let alone when it stops being true.
 ## Why it exists
 
 Unlike chat vendors' rolling memories, ForeSight treats memory as
-**scheduled first-class data**: expiration, injection eligibility, retrieval
-weighting and contradiction resolution all derive from one structured policy
-file (`policy.yaml`) — zero hardcoded behavior.
+**scheduled first-class data**: every implemented tunable — expiry/TTL,
+renewal cadence, activation β, retrieval factor weights, injection budgets —
+is read from one structured policy file (`policy.yaml`). Fields that are not
+yet wired are explicitly registered as reserved in `eval/DECISIONS.md` §13
+(no silent decoration).
 
 ForeSight approaches this with two axes borrowed from linguistics:
 
@@ -132,10 +134,12 @@ cp templates/policy.yaml.example ~/.config/foresight/policy.yaml
 
 ### Policy file
 
-`policy.yaml` is the single source of truth for behavior: permission matrix,
-aspect registry (TTL, dwell, injection mode), gate categories, activation β
-and decay constants, retrieval factor weights, injection budgets, nudge
-cadence, server port/token. **You decide** your assistant's personality,
+`policy.yaml` is the single source of truth for the **implemented** tunables:
+permission matrix, aspect lifecycle (TTL/renewal/anchor rendering), gate
+categories, activation β and decay constants, retrieval factor weights
+(frozen: 0.40/0.20/0.25/0.15), injection budgets, nudge cadence, server
+port/token. Fields without an executor are explicitly listed as reserved in
+`eval/DECISIONS.md` §13. **You decide** your assistant's personality,
 profile, and memory policy — none of it is baked into the code.
 
 ## Layout
