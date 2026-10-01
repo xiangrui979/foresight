@@ -24,7 +24,7 @@
 | 0.3 trace schema v2 + STATUS | ✅ | `36a163f` | schema + `lib/trace.mjs`（validate/SIR 复算）+ 3 条样例；修复 `/lib/` 误忽略 eval/lib |
 | 0.4 eval 脚手架 | ✅ | `a1cfbb2` | runner --help / configs / eval README / artifact ignores |
 | 0.5 成本模型骨架 | ✅ | `7961719` | budget.mjs / cost.mjs / fullcontext 入模（tokensPerCall.reader）/ 双跑 ×2；自检通过 |
-| 0.6 冻结开关 + seed 探针 | ✅ | `d2b4fbe` | §14 开关/时间线冻结；`eval/scripts/seed-probe.mjs` 交付；seed 实测 **pending（无 API key）** |
+| 0.6 冻结开关 + seed 探针 | ✅ | `d2b4fbe` | §14 开关/时间线冻结；`eval/scripts/seed-probe.mjs` 交付；seed 实测完成（2026-10-01 补测）：`seed_effective`（DECISIONS §4） |
 | 0.7 分类器语言决策门 | ✅ | `278241a` | §15 默认 A（双语 rules）+ G1 切换规则 + 成本影响 + P1.9 范围冻结 |
 
 **P0 收尾验证（2026-10-01，本机 Node v24.11.1）**：`pnpm build` ✅ · `pnpm test` 80/80 ✅ · `trace --validate` 3/3 ✅ · `cost/budget --selfcheck` ✅ · `runner --help` ✅（exit 0）。
@@ -43,5 +43,5 @@
 
 | 项 | 影响 | 处理 |
 |---|---|---|
-| `DEEPSEEK_API_KEY` 缺失 | Task 0.6 seed 实测、P1.4 judge/LLM 基建无法真实调用 | 探针脚本 `eval/scripts/seed-probe.mjs` 待 key；偏离已登记 DECISIONS |
+| `DEEPSEEK_API_KEY` 环境依赖 | P1.4 judge/LLM 基建真实调用 | P0.6 seed 补测已完成（2026-10-01 临时注入）；P1 真实调用前需确认 key 供应 |
 | CI 远端首跑未验证 | G0「CI 绿」待确认 | 下次 push 后检查 12 个矩阵 job |

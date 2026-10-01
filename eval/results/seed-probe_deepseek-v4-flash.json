@@ -1,0 +1,58 @@
+{
+  "probed_at": "2026-10-01T14:21:21.634Z",
+  "endpoint": "https://api.deepseek.com/v1",
+  "model": "deepseek-v4-flash",
+  "prompt": "请随机列出 3 个颜色词，用英文逗号分隔，不要解释。",
+  "seed": 0,
+  "runs": 3,
+  "outputs_identical": false,
+  "outputs": [
+    "",
+    "",
+    "blue, crimson, amber"
+  ],
+  "usage": [
+    {
+      "prompt_tokens": 49,
+      "completion_tokens": 64,
+      "total_tokens": 113,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 63
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 49
+    },
+    {
+      "prompt_tokens": 49,
+      "completion_tokens": 64,
+      "total_tokens": 113,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 64
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 49
+    },
+    {
+      "prompt_tokens": 49,
+      "completion_tokens": 63,
+      "total_tokens": 112,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "completion_tokens_details": {
+        "reasoning_tokens": 57
+      },
+      "prompt_cache_hit_tokens": 0,
+      "prompt_cache_miss_tokens": 49
+    }
+  ],
+  "errors": [],
+  "conclusion": "seed_effective",
+  "note": "各次输出存在差异；若 usage 亦不同，seed 未完全固定输出。"
+}

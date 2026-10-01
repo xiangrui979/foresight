@@ -108,7 +108,7 @@
 - **人审**：分层抽 ≥120 条双盲标注，计算 κ（目标 **≥0.7**）与 per-stratum 一致率 + **AC1**。
   - κ ∈ [0.6, 0.7)：主表附人类子集敏感性分析 + 触发 C-extension 双 judge；
   - κ < 0.6：重写 prompt 重跑。
-- **seed**：`--seed` 全链路参数化；seed 支持性探针 `eval/scripts/seed-probe.mjs`（P0.6 已交付）。**状态：待实测**（环境缺 `DEEPSEEK_API_KEY`；判据 = 同 prompt + seed 重放 3 次的输出/usage 差异，结论必须回填本节）。若输出无差异或接口不支持 seed，按 §11.1 扰动方案替代（温度 / 提示顺序 / 同义改写）。
+- **seed**：`--seed` 全链路参数化；seed 支持性探针 `eval/scripts/seed-probe.mjs`（P0.6 已交付）。**状态：已实测（2026-10-01）**——`deepseek-v4-flash` @ `https://api.deepseek.com/v1`，seed=0、temperature=0、重放 3 次：`outputs_identical=false`（输出与 usage 均存在差异；reasoning_tokens 63/64/57），无接口错误 → 结论 `seed_effective`（差异存在 → 方案可用）；不触发 §11.1 扰动替代，C-extension 维持 seed ∈ {0,1,2}。归档 `eval/results/seed-probe_deepseek-v4-flash.json`；同日复跑 2 次结论同型；官方 API 参考页（中/英，2026-10-01 核对）未列出 seed 参数，以实测口径为准。附注：探针 `max_tokens=64` 对 thinking 输出偏紧，多次 content 截断为空串；差异判定以 outputs+usage 联合为准。若输出无差异或接口不支持 seed，按 §11.1 扰动方案替代（温度 / 提示顺序 / 同义改写）。
 
 ---
 
@@ -285,9 +285,11 @@
 | 2026-10-01 | pre-reg-v1 | 初次预注册（Task 0.1）；对应计划 v3.1 |
 | 2026-10-01 | pre-reg-v1.1 | Task 0.6：§14 十项开关 + 时间线目标冻结；seed 探针脚本交付（`eval/scripts/seed-probe.mjs`），实测 pending（无 API key，D19 替代方案已预注册于 §11.1） |
 | 2026-10-01 | pre-reg-v1.2 | Task 0.7：§15 分类器语言决策门定稿（默认 A + G1 切换规则 + 成本影响 + P1.9 范围冻结） |
+| 2026-10-01 | pre-reg-v1.3 | Task 0.6 补测：seed 支持性探针实测完成（`deepseek-v4-flash`，seed=0 重放 3 次：`outputs_identical=false`、无接口错误 → `seed_effective`）；§4 回填；归档 `eval/results/seed-probe_deepseek-v4-flash.json`；C-extension 维持 seed 方案、§11.1 不变；Deviations「无 API key 未实测」偏离消解 |
 
 ## Deviations
 
 | 日期 | 偏离项 | 原因 | 影响 | 补偿实验 |
 |---|---|---|---|---|
 | 2026-10-01 | seed 支持性实测未执行（无 API key） | 环境无 `DEEPSEEK_API_KEY` | C-extension 跨种子方案待定 | `eval/scripts/seed-probe.mjs` 待 key 就绪后补测并回填 §4/§11.1 |
+| 2026-10-01 | （消解）seed 支持性实测补测完成：探针已执行并回填 §4 | 环境 key 临时注入提供 | 原偏离无遗留影响 | 已执行 `eval/scripts/seed-probe.mjs`；归档见 §4 |
