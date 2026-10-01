@@ -23,8 +23,8 @@
 | 0.2 测试命令 + pin Node + CI | ✅ | `ce8b628` | `node --test`；`.nvmrc=24`；CI {ubuntu,windows}×{20,22,24}×{UTC,Asia/Shanghai}（远端首跑待验证） |
 | 0.3 trace schema v2 + STATUS | ✅ | `36a163f` | schema + `lib/trace.mjs`（validate/SIR 复算）+ 3 条样例；修复 `/lib/` 误忽略 eval/lib |
 | 0.4 eval 脚手架 | ✅ | `a1cfbb2` | runner --help / configs / eval README / artifact ignores |
-| 0.5 成本模型骨架 | ✅ | `(next)` | budget.mjs / cost.mjs / fullcontext 入模（tokensPerCall.reader）/ 双跑 ×2；自检通过 |
-| 0.6 冻结开关 + seed 探针 | ⬜ | — | seed 实测 **pending（无 API key）**，探针脚本先行 |
+| 0.5 成本模型骨架 | ✅ | `7961719` | budget.mjs / cost.mjs / fullcontext 入模（tokensPerCall.reader）/ 双跑 ×2；自检通过 |
+| 0.6 冻结开关 + seed 探针 | ✅ | `(next)` | §14 开关/时间线冻结；`eval/scripts/seed-probe.mjs` 交付；seed 实测 **pending（无 API key）** |
 | 0.7 分类器语言决策门 | ⬜ | — | 默认 A + G1 切换规则 |
 
 ## P1–P5
