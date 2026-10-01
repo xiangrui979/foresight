@@ -35,24 +35,27 @@ function parseIso(s: string | undefined): number | null {
 
 /** Progressive valid-time window (start / expiry / basis). */
 export function progressiveWindow(policy: Policy, m: Memory): ExpiryWindow {
-  const ttlDays = policy.aspects.progressive?.default_ttl_days ?? 7
-  const ttlMs = m.createdAt + Number(ttlDays) * MS_PER_DAY
+  const ttlDays = Number(policy.aspects.progressive?.default_ttl_days ?? 7)
+  /** TTL fallback is always an absolute deadline (record-time based) ... */
+  const createdTtlMs = m.createdAt + ttlDays * MS_PER_DAY
   const startMs = parseIso(m.anchor.start)
 
   if (m.anchor.type === 'none' || m.anchor.type === 'open') {
-    return { startMs: null, endMs: ttlMs, reason: 'ttl' }
+    return { startMs: null, endMs: createdTtlMs, reason: 'ttl' }
   }
   if (m.anchor.type === 'point') {
+    // ... except point anchors: the TTL runs from the anchor time (C2),
+    // never from createdAt + an already-absolute timestamp.
     const base = startMs ?? m.createdAt
-    return { startMs: base, endMs: base + ttlMs, reason: 'ttl' }
+    return { startMs: base, endMs: base + ttlDays * MS_PER_DAY, reason: 'ttl' }
   }
   const endMs = parseIso(m.anchor.end)
   if (endMs === null) {
-    return { startMs, endMs: ttlMs, reason: 'ttl' }
+    return { startMs, endMs: createdTtlMs, reason: 'ttl' }
   }
   if (m.telicity === 'unbounded') {
-    return ttlMs <= endMs
-      ? { startMs, endMs: ttlMs, reason: 'ttl' }
+    return createdTtlMs <= endMs
+      ? { startMs, endMs: createdTtlMs, reason: 'ttl' }
       : { startMs, endMs, reason: 'anchor' }
   }
   return { startMs, endMs, reason: 'anchor' }
@@ -102,4 +105,19 @@ export function sweepExpired(store: Store, policy: Policy, now: number): string[
     if (applyExpiry(store, policy, m, now)) out.push(m.id)
   }
   return out
+}
+
+/**
+ * Lifecycle read-path eligibility (C1 + C10): progressive is readable only
+ * inside [startMs, endMs]. Expiry is normally already materialized by
+ * `sweepExpired`; this predicate additionally hides "not started yet"
+ * (C10) and keeps callers correct when they skip the sweep.
+ * perfect/prospective/gnomic are time-unbounded → always eligible.
+ */
+export function lifecycleEligible(policy: Policy, m: Memory, now: number): boolean {
+  if (m.aspect !== 'progressive') return true
+  const w = progressiveWindow(policy, m)
+  if (w.startMs !== null && now < w.startMs) return false
+  if (w.endMs !== null && now > w.endMs) return false
+  return true
 }

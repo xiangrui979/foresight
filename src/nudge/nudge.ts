@@ -17,6 +17,8 @@
  */
 import type { Policy, Aspect, MemoryStatus } from '../policy.js'
 import type { Memory } from '../store.js'
+import { expireCheck, renewalDue } from '../evolve/temporal.js'
+import { normalizeClock, systemClock, type Clock, type ClockLike } from '../clock.js'
 
 export type ReviewKind = 'renewal' | 'prospective' | 'conflict' | 'expiry_suggest'
 
@@ -38,6 +40,7 @@ export interface NudgeStore {
   listLinksOf(id: string): Array<{ id: number; src: string; dst: string; rel: string; weight: number; source: string }>
   listConversationsSince?(sessionId: string, createdAfter: number, limit?: number): Array<{ id: number; peer: string; content: string; createdAt: number }>
   listRecentUserTexts?(since: number, limit?: number): string[]
+  searchConversations?(query: string, limit?: number): Array<{ id: number; content: string }>
   getMemory?(id: string): Memory | null
   updateMemory?(id: string, patch: Partial<Pick<Memory, 'content' | 'aspect' | 'status' | 'metadata' | 'activation' | 'baseWeight' | 'anchor' | 'category' | 'telicity' | 'modality'>>): Memory | null
   softDelete?(id: string): boolean
@@ -52,6 +55,9 @@ export interface NudgeDeps {
   sessionStartTs: number
   sessionId?: string
   llm?: LlmLike
+  /** Injectable evidence provider for prediction verification (C7);
+   *  default = conversation FTS + linked-memory evidence. */
+  evidenceFor?: (m: Memory) => string[] | Promise<string[]>
 }
 
 export interface LlmLike {
@@ -64,43 +70,10 @@ export interface LlmLike {
   }): Promise<{ content: string; json: unknown | null }>
 }
 
-const RENEWAL_DAYS_BEFORE = 7
 const DAY_MS = 86_400_000
 
-// ── temporal checks (mirrors evolve/temporal.ts contract) ────────────
-
-export function expireCheck(memory: Memory, now: number): 'expired' | 'active' {
-  if (memory.aspect !== 'progressive' || memory.status === 'expired') return memory.status === 'expired' ? 'expired' : 'active'
-  const a = memory.anchor
-  if (a.type === 'interval' && a.end) {
-    if (Date.parse(a.end) <= now) return 'expired'
-  }
-  if (a.type === 'none' || memory.telicity === 'unbounded') {
-    const ttlDays = ttlDaysOf(memory)
-    if (ttlDays > 0 && now - memory.createdAt >= ttlDays * DAY_MS) return 'expired'
-  }
-  return 'active'
-}
-
-export function renewalDue(memory: Memory, now: number, daysBefore = RENEWAL_DAYS_BEFORE): boolean {
-  if (memory.aspect !== 'progressive' || memory.status !== 'active') return false
-  if (expireCheck(memory, now) === 'expired') return false
-  const a = memory.anchor
-  if (a.type === 'none' || memory.telicity === 'unbounded') {
-    const ttlDays = ttlDaysOf(memory)
-    if (ttlDays <= 0) return false
-    const ageDays = (now - memory.createdAt) / DAY_MS
-    return ageDays >= ttlDays - daysBefore
-  }
-  if (a.type === 'interval' && a.end) {
-    return Date.parse(a.end) - now <= daysBefore * DAY_MS
-  }
-  return false
-}
-
-function ttlDaysOf(memory: Memory): number {
-  return memory.anchor.type === 'none' ? 7 : 7
-}
+// Temporal checks are the single evolve/temporal implementation (C2):
+// expireCheck(policy, m, now) / renewalDue(policy, m, now) — no local copy.
 
 // ── candidate extraction (rules pattern scan, zero LLM) ──────────────
 
@@ -177,8 +150,8 @@ function collectTemporalReviews(deps: NudgeDeps): ReviewItem[] {
   const now = deps.now
 
   for (const m of deps.store.listByAspectStatus('progressive', 'active')) {
-    if (expireCheck(m, now) === 'expired') continue
-    if (!renewalDue(m, now)) continue
+    if (expireCheck(policy, m, now) === 'expired') continue
+    if (!renewalDue(policy, m, now)) continue
     const ttl = policy.aspects.progressive.default_ttl_days ?? 7
     const ageDays = Math.floor((now - m.createdAt) / DAY_MS)
     if (m.anchor.type === 'none' || m.telicity === 'unbounded') {
@@ -342,16 +315,64 @@ function duePredictions(deps: NudgeDeps): Memory[] {
   return out
 }
 
+/** Evidence lookup keywords: ASCII words (≥4) + CJK bigrams (C7). */
+export function predictionKeywords(text: string): string[] {
+  const out: string[] = []
+  for (const w of text.toLowerCase().split(/[^a-z0-9]+/)) {
+    if (w.length >= 4 && !/^\d+$/.test(w)) out.push(w)
+  }
+  for (const chunk of text.match(/[\u4e00-\u9fff]+/g) ?? []) {
+    if (chunk.length >= 2) {
+      for (let i = 0; i + 2 <= chunk.length && i < 4; i++) out.push(chunk.slice(i, i + 2))
+    }
+  }
+  return [...new Set(out)].slice(0, 6)
+}
+
+/**
+ * Evidence channel for prediction verification (C7): injectable provider
+ * wins (tests/runner); default = conversation FTS on keywords + linked
+ * memory evidence (supports/contradicts/refines/...).
+ */
+export async function evidenceForPrediction(deps: NudgeDeps, m: Memory): Promise<string[]> {
+  if (deps.evidenceFor) return (await deps.evidenceFor(m)).slice(0, 8)
+  const out: string[] = []
+  const seen = new Set<string>()
+  if (deps.store.searchConversations) {
+    for (const kw of predictionKeywords(m.content)) {
+      for (const hit of deps.store.searchConversations(kw, 3)) {
+        if (!seen.has(hit.content)) {
+          seen.add(hit.content)
+          out.push(hit.content)
+        }
+      }
+      if (out.length >= 8) break
+    }
+  }
+  for (const link of deps.store.listLinksOf(m.id)) {
+    if (out.length >= 8) break
+    const peerId = link.src === m.id ? link.dst : link.src
+    const peer = deps.store.getMemory?.(peerId)
+    if (peer && !seen.has(peer.content)) {
+      seen.add(peer.content)
+      out.push(`[${link.rel}] ${peer.content}`)
+    }
+  }
+  return out
+}
+
 async function verdictFor(deps: NudgeDeps, m: Memory): Promise<PredictionVerdict> {
   if (!deps.llm) return 'uncertain'
+  const evidence = await evidenceForPrediction(deps, m)
+  const evidenceBlock = evidence.length > 0 ? evidence.map((e) => `- ${e.slice(0, 200)}`).join('\n') : '（无证据）'
   try {
     const r = await deps.llm.call({
       model: deps.policy.nudge.llm_model ?? deps.policy.llm.model_classify,
       system:
-        '你是预测验证器。给定一条预测记忆及其判定日，判断预测是否已实现。' +
+        '你是预测验证器。给定一条预测记忆、判定日与相关证据，判断预测是否已实现。' +
         '只输出 JSON：{"verdict":"fulfilled"|"refuted"|"uncertain","reason":"..."}。' +
-        '证据不足、无法确认现实状态时，必须输出 uncertain。',
-      user: `预测内容：${m.content}\n判定日：${(m.metadata?.predict_by as string) ?? ''}`,
+        '必须只依据给定证据判断；证据为空或不足以证明已实现/已证伪时，必须输出 uncertain。',
+      user: `预测内容：${m.content}\n判定日：${(m.metadata?.predict_by as string) ?? ''}\n相关证据：\n${evidenceBlock}`,
       json: true,
       maxTokens: 256,
     })
@@ -441,6 +462,7 @@ export interface NudgePluginOptions {
   sessionIdOf?: (session: unknown) => string | undefined
   hook?: string
   llm?: LlmLike
+  clock?: ClockLike
 }
 
 export class NudgePlugin {
@@ -449,8 +471,11 @@ export class NudgePlugin {
   private lastNudgedTurn = -1
   private recentUserTexts: string[] = []
   private lastSessionId: string | undefined
+  private clock: Clock
 
-  constructor(private opts: NudgePluginOptions) {}
+  constructor(private opts: NudgePluginOptions) {
+    this.clock = normalizeClock(opts.clock ?? systemClock)
+  }
 
   attach(ctx: unknown): void {
     const c = ctx as { on?: (ev: string, fn: (...args: unknown[]) => unknown) => unknown }
@@ -467,7 +492,7 @@ export class NudgePlugin {
     const e = event as { type?: string; data?: unknown }
     if (e?.type === 'turn/end') {
       this.turnCount++
-      if (this.sessionStartTs === undefined) this.sessionStartTs = Date.now()
+      if (this.sessionStartTs === undefined) this.sessionStartTs = this.clock.now()
       this.lastSessionId = this.opts.sessionIdOf?.(session)
     } else if (e?.type === 'user/message') {
       const data = e.data as { content?: Array<{ type?: string; text?: string }> } | undefined
@@ -492,7 +517,7 @@ export class NudgePlugin {
     if (!due) return decision
     this.lastNudgedTurn = this.turnCount
 
-    const now = Date.now()
+    const now = this.clock.now()
     const result = await buildNudgeAsync({
       store: this.opts.store,
       policy: this.opts.policy,
@@ -525,11 +550,11 @@ export const inject = ['foresight']
 
 /** dsh assembly: construct NudgePlugin from ctx.foresight and attach. */
 export function apply(ctx: unknown): () => void {
-  const fsight = (ctx as { foresight?: { store?: NudgeStore; policy?: Policy; llm?: LlmLike } }).foresight
+  const fsight = (ctx as { foresight?: { store?: NudgeStore; policy?: Policy; llm?: LlmLike; clock?: ClockLike } }).foresight
   if (!fsight?.store || !fsight.policy) {
     throw new Error('foresight-nudge 需要 foresight 服务（@foresight/memory 主插件）')
   }
-  const plugin = new NudgePlugin({ store: fsight.store, policy: fsight.policy, llm: fsight.llm })
+  const plugin = new NudgePlugin({ store: fsight.store, policy: fsight.policy, llm: fsight.llm, clock: fsight.clock })
   plugin.attach(ctx)
   return () => { /* nudge has no resource cleanup */ }
 }

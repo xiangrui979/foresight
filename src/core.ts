@@ -17,9 +17,14 @@ import { search, type SearchHit, type SearchOptions } from './retrieve/search.js
 import { reason as dialecticReason, type ReasonDeps, type ReasonResult } from './dialectic/reason.js'
 import { Deriver } from './derive/deriver.js'
 import { resolveConfig, ensureDataDir, type Config } from './config.js'
+import { normalizeClock, type Clock, type ClockLike } from './clock.js'
+import { sweepExpired } from './evolve/temporal.js'
 import * as path from 'node:path'
 
-export interface ForeSightOptions extends Partial<Config> {}
+export interface ForeSightOptions extends Partial<Config> {
+  /** Injectable clock (ManualClock in tests / eval time travel). */
+  clock?: ClockLike
+}
 
 export interface Actor {
   name: string
@@ -32,6 +37,7 @@ export class ForeSight {
   readonly embed: EmbedProvider
   readonly llm: LlmLike
   readonly memoryRoot: string
+  readonly clock: Clock
   private conflictResolver: ConflictResolver
   private deriver: Deriver | null = null
   private schema: Schema
@@ -42,8 +48,9 @@ export class ForeSight {
     this.memoryRoot = cfg.memoryRoot
     this.policy = loadPolicyFromRoot(this.memoryRoot)
     this.schema = openDatabase(path.join(this.memoryRoot, cfg.dbFile))
+    this.clock = normalizeClock(opts.clock)
     const logFile = this.policy.audit.log_file
-    this.store = new Store(this.schema, logFile ? path.join(this.memoryRoot, logFile) : null)
+    this.store = new Store(this.schema, logFile ? path.join(this.memoryRoot, logFile) : null, this.clock)
     this.embed = new OllamaEmbedProvider({
       baseUrl: cfg.embedBaseUrl,
       model: cfg.embedModel,
@@ -55,9 +62,9 @@ export class ForeSight {
       maxRetries: Number(this.policy.llm.max_retries ?? 2),
     }
     this.llm = new LlmProvider(backend)
-    this.conflictResolver = new ConflictResolver(this.policy, this.store)
+    this.conflictResolver = new ConflictResolver(this.policy, this.store, undefined, this.clock)
     if (this.policy.derive.enabled) {
-      this.deriver = new Deriver(this.store, this.llm, this.policy)
+      this.deriver = new Deriver(this.store, this.llm, this.policy, this.clock)
     }
   }
 
@@ -72,6 +79,7 @@ export class ForeSight {
       conflictResolver: {
         resolve: (n, _p) => this.conflictResolver.resolveOnWrite(n).then(() => undefined),
       },
+      clock: this.clock,
     }
     const input: GateWriteInput = {
       text,
@@ -81,9 +89,11 @@ export class ForeSight {
     return gateWrite(input, deps)
   }
 
-  /** Retrieval: composable scoring + time filter + anchor render. */
+  /** Retrieval: read-path lifecycle contract (C1) + scoring + anchor render. */
   async query(query: string, opts?: SearchOptions): Promise<SearchHit[]> {
-    return search(query, this.store, this.embed, this.policy, Date.now(), opts)
+    const now = this.clock.now()
+    sweepExpired(this.store, this.policy, now)
+    return search(query, this.store, this.embed, this.policy, now, opts)
   }
 
   /** Dialectic reasoning (LLM failure → evidence concat, never blocks). */
@@ -93,7 +103,7 @@ export class ForeSight {
       policy: this.policy,
       embed: this.embed,
       llm: this.llm,
-      now: Date.now(),
+      now: this.clock.now(),
     })
   }
 

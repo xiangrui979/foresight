@@ -17,12 +17,15 @@ import * as fs from 'node:fs'
 import * as path from 'node:path'
 import type { Store } from '../store.js'
 import type { Policy, Anchor } from '../policy.js'
+import { normalizeClock, type ClockLike } from '../clock.js'
+import { lifecycleEligible, sweepExpired } from '../evolve/temporal.js'
 
 export interface RenderDeps {
   store: Store
   policy: Policy
   memoryRoot: string
   now?: Date
+  clock?: ClockLike
 }
 
 export interface RenderResult {
@@ -73,12 +76,18 @@ export function renderAnchorSuffix(content: string, anchor: Anchor): string {
   return content
 }
 
-/** memories render: progressive(active) table → drop expired → one per line. */
-export function renderMemories(store: Store, now: Date): string {
+/**
+ * memories render: sweep lifecycle first (C1), then progressive(active)
+ * rows inside their valid-time window (C10) → one per line.
+ */
+export function renderMemories(store: Store, policy: Policy, now: Date): string {
+  const nowMs = now.getTime()
+  sweepExpired(store, policy, nowMs)
   const rows = store.listByAspectStatus('progressive', 'active')
   const lines: string[] = []
   for (const m of rows) {
     if (anchorExpired(m.anchor, now)) continue
+    if (!lifecycleEligible(policy, m, nowMs)) continue
     lines.push(renderAnchorSuffix(m.content, m.anchor))
   }
   return lines.join('\n')
@@ -86,11 +95,11 @@ export function renderMemories(store: Store, now: Date): string {
 
 /** Three-section render (pure). */
 export function renderSections(deps: RenderDeps): RenderResult {
-  const now = deps.now ?? new Date()
+  const now = deps.now ?? new Date(normalizeClock(deps.clock).now())
   return {
     soul: readTextFile(deps.memoryRoot, 'SOUL.md'),
     user: readTextFile(deps.memoryRoot, 'user.md'),
-    memories: renderMemories(deps.store, now),
+    memories: renderMemories(deps.store, deps.policy, now),
   }
 }
 
@@ -117,7 +126,7 @@ export function registerSections(ctx: unknown, deps: RenderDeps): () => void {
               store: deps.store,
               policy: deps.policy,
               memoryRoot: deps.memoryRoot,
-              now: new Date(),
+              clock: deps.clock,
             })
           ),
       }) as () => void
@@ -153,7 +162,7 @@ export const inject = ['foresight', 'systemPrompt']
  * mount three sections. Throws on missing deps (fail-fast, never silent).
  */
 export function apply(ctx: InjectCtx): () => void {
-  const fsight = (ctx as unknown as { foresight?: { store?: Store; policy?: Policy; memoryRoot?: string } }).foresight
+  const fsight = (ctx as unknown as { foresight?: { store?: Store; policy?: Policy; memoryRoot?: string; clock?: ClockLike } }).foresight
   const store = fsight?.store
   const policy = fsight?.policy
   const memoryRoot = fsight?.memoryRoot
@@ -163,5 +172,5 @@ export function apply(ctx: InjectCtx): () => void {
   if (!ctx.systemPrompt || typeof ctx.systemPrompt.section !== 'function') {
     throw new Error('foresight-inject: ctx.systemPrompt 不可用（需要 dsh-system-prompt 服务）')
   }
-  return registerSections(ctx, { store, policy, memoryRoot })
+  return registerSections(ctx, { store, policy, memoryRoot, clock: fsight.clock })
 }

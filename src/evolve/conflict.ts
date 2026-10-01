@@ -16,6 +16,7 @@
 import type { Aspect, MemoryStatus, Policy } from '../types.js'
 import type { Memory, Store } from '../store.js'
 import { computeActivation, evidence } from './activation.js'
+import { normalizeClock, systemClock, type Clock, type ClockLike } from '../clock.js'
 
 export type ConflictJudge = (n: Memory, o: Memory) => boolean | Promise<boolean>
 
@@ -96,14 +97,17 @@ export interface ConflictResolution {
 export class ConflictResolver {
   private beta: number
   private judge: ConflictJudge
+  private clock: Clock
 
   constructor(
     private policy: Policy,
     private store: Store,
     judge?: ConflictJudge,
+    clock: ClockLike = systemClock,
   ) {
     this.beta = policy.activation.beta
     this.judge = judge ?? defaultConflictJudge
+    this.clock = normalizeClock(clock)
   }
 
   /** Runtime β (Root tool), clamped [0,1], audit beta.set. */
@@ -116,7 +120,7 @@ export class ConflictResolver {
     return this.beta
   }
 
-  async resolveOnWrite(n: Memory, now = Date.now()): Promise<ConflictResolution> {
+  async resolveOnWrite(n: Memory, now = this.clock.now()): Promise<ConflictResolution> {
     const cfg = this.policy.activation
     if (!n.embedding) return { checked: false, conflicts: [] }
     const vec = toF32(n.embedding)

@@ -29,11 +29,29 @@
 
 **P0 收尾验证（2026-10-01，本机 Node v24.11.1）**：`pnpm build` ✅ · `pnpm test` 80/80 ✅ · `trace --validate` 3/3 ✅ · `cost/budget --selfcheck` ✅ · `runner --help` ✅（exit 0）。
 
+## P1 · 机制修复与评估基建（10–12 天，2 checkpoint；D21）
+
+> Checkpoint-1（Task 1.1–1.4 后）：时钟/生命周期/因子/UTC + trace/预算 + judge 基建跑通。
+> Checkpoint-2（Task 1.5–1.7 后）：7 系统 + 3 adapter + golden 5/5；gate-eval（1.9）可与 P2 并行。
+
+| Task | 状态 | commit | 备注 |
+|---|---|---|---|
+| 1.1 Clock + 生命周期接线 + 过期统一 + UTC（C1/C2/C7/C8/C10/C11） | ✅ | `(next)` | 93/93（旧 80 + 新 13）；TZ=UTC / Asia/Shanghai 双跑通过；`Date.now()` 仅 `src/clock.ts`；nudge 重复实现删除；point 锚 TTL 修正；未然体证据通道；旧 gate 时区夹具 UTC 化（C8 语义） |
+| 1.2 检索因子对齐 + 全 policy 表面一致性（C3/C9） | ⬜ | — | shipped 模板 ↔ FACTORS 一致性测试 |
+| 1.3 Trace + token 记账 + 预算护栏 | ⬜ | — | runner 5 题自检 |
+| 1.4 LLM 缓存 + judge 基建（D1/D6） | ⬜ | — | 内容哈希缓存 + --no-cache |
+| 1.5 消融开关 + 7 系统 + 预算渲染（D8/C6/D17） | ⬜ | — | closedbook/render-budget |
+| 1.6 Bench adapter（D7/D14） | ⬜ | — | SPEC 冻结 + golden 5/5 |
+| 1.7 基准拉取与许可核验 | ⬜ | — | SHA256/题量回填 DECISIONS |
+| 1.8 评分器（score/stats 骨架） | ⬜ | — | |
+| 1.9 Gate/aspect×anchor 分类器评估（C5，400 条） | ⬜ | — | G1 终审 A/B |
+| 1.10 Smoke 矩阵（G1 门槛） | ⬜ | — | 7/7 + 机制清单 |
+
 ## P1–P5
 
 | 阶段 | 状态 | 备注 |
 |---|---|---|
-| P1 机制修复与评估基建（C1–C11，10 task，2 checkpoint） | ⬜ | 未过 G1 不得进入 P2 |
+| P1 机制修复与评估基建（C1–C11，10 task，2 checkpoint） | 🔄 | 1.1 ✅；未过 G1 不得进入 P2 |
 | P2 主实验（pilot → 主矩阵 → 消融 → 人审 → 冻结） | ⬜ | |
 | P3 bench-timesuite（7 类 × 60 + 留出集 + 盲评 140） | ⬜ | |
 | P4 分析与写作（统计图表 → 草稿 → 合规审计 → 评审 → G3.5） | ⬜ | |

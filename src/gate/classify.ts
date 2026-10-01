@@ -82,7 +82,7 @@ export function classifyByRules(policy: Policy, now: Date, text: string): Classi
   const done = MARKER_DONE.test(t)
   const doing = MARKER_DOING.test(t)
   if (done && doing) return null // mixed: mechanics cannot decide
-  const today = isoDate(now)
+  const today = isoDateUTC(now)
   if (hui) {
     return {
       category: null, aspect: 'prospective',
@@ -262,25 +262,26 @@ const WEEKDAYS: Record<string, number> = { '一': 1, '二': 2, '三': 3, '四': 
 export function extractDate(text: string, now: Date): string | null {
   const iso = text.match(/(\d{4})-(\d{2})-(\d{2})/)
   if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}`
-  if (/明天/.test(text)) return isoDate(new Date(now.getTime() + DAY_MS))
-  if (/后天/.test(text)) return isoDate(new Date(now.getTime() + 2 * DAY_MS))
-  if (/今天/.test(text)) return isoDate(now)
+  if (/明天/.test(text)) return isoDateUTC(new Date(now.getTime() + DAY_MS))
+  if (/后天/.test(text)) return isoDateUTC(new Date(now.getTime() + 2 * DAY_MS))
+  if (/今天/.test(text)) return isoDateUTC(now)
   const nw = text.match(/下周([一二三四五六日天])/)
   if (nw && nw[1] in WEEKDAYS) {
     const target = WEEKDAYS[nw[1]]
-    let diff = (target - now.getDay() + 7) % 7
+    // UTC weekday (C8): local timezone must never shift the anchor date.
+    let diff = (target - now.getUTCDay() + 7) % 7
     if (diff === 0) diff = 7
-    return isoDate(new Date(now.getTime() + diff * DAY_MS))
+    return isoDateUTC(new Date(now.getTime() + diff * DAY_MS))
   }
   const days = text.match(/(\d+)\s*天(?:后|之内)/)
-  if (days) return isoDate(new Date(now.getTime() + Number(days[1]) * DAY_MS))
+  if (days) return isoDateUTC(new Date(now.getTime() + Number(days[1]) * DAY_MS))
   return null
 }
 
-/** Local-timezone ISO date (YYYY-MM-DD). */
-export function isoDate(d: Date): string {
-  const y = d.getFullYear()
-  const m = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  return `${y}-${m}-${day}`
+/** UTC ISO date (YYYY-MM-DD); timezone-independent by contract (C8). */
+export function isoDateUTC(d: Date): string {
+  return d.toISOString().slice(0, 10)
 }
+
+/** @deprecated use isoDateUTC — kept as an alias for older callers. */
+export const isoDate = isoDateUTC

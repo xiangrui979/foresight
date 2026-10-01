@@ -21,6 +21,7 @@ export function apply(ctx: { provide: (key: string, value: unknown) => void }, c
     dbFile: config.dbFile,
     embedBaseUrl: config.embedBaseUrl,
     embedModel: config.embedModel,
+    clock: config.clock,
   })
   ctx.provide('foresight', fs)
   return () => fs.close()

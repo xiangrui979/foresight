@@ -25,6 +25,7 @@ import type { EmbedProvider } from '../store/embed.js'
 import type { LlmLike } from '../dialectic/reason.js'
 import { gateWrite } from '../gate/gate.js'
 import { search, type SearchHit } from '../retrieve/search.js'
+import { normalizeClock, type ClockLike } from '../clock.js'
 
 export interface ServerDeps {
   policy: Policy
@@ -36,6 +37,7 @@ export interface ServerDeps {
   gateWrite?: typeof gateWrite
   search?: typeof search
   reason?: (query: string, deps: unknown, opts?: unknown) => Promise<Record<string, unknown>>
+  clock?: ClockLike
 }
 
 export interface StartedServer {
@@ -225,7 +227,7 @@ async function handleReason(req: http.IncomingMessage, res: http.ServerResponse,
     policy: ctx.policy,
     embed: ctx.embed,
     llm: ctx.llm,
-    now: Date.now(),
+    now: normalizeClock(ctx.clock).now(),
   })
   return json(res, 200, { query: query.trim(), ...result })
 }
@@ -325,7 +327,7 @@ export const name = 'foresight-server'
 export const inject = ['foresight']
 
 export async function apply(ctx: unknown): Promise<() => void> {
-  const fsight = (ctx as { foresight?: { policy?: Policy; store?: Store; embed?: EmbedProvider; llm?: LlmLike; reason?: ServerDeps['reason'] } }).foresight
+  const fsight = (ctx as { foresight?: { policy?: Policy; store?: Store; embed?: EmbedProvider; llm?: LlmLike; reason?: ServerDeps['reason']; clock?: ClockLike } }).foresight
   if (!fsight?.policy || !fsight.store) {
     throw new Error('foresight-server 需要 foresight 服务（@foresight/memory 主插件）')
   }
@@ -336,6 +338,7 @@ export async function apply(ctx: unknown): Promise<() => void> {
     embed: fsight.embed,
     llm: fsight.llm,
     reason: fsight.reason,
+    clock: fsight.clock,
   })
   return () => { void started.close() }
 }

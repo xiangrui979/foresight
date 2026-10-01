@@ -90,7 +90,7 @@ test('classify: doing marker → progressive unbounded', () => {
 
 test('classify: 会 → prediction with extracted predict_by', () => {
   const p = makePolicy()
-  const now = new Date('2026-07-01T00:00:00')
+  const now = new Date('2026-07-01T00:00:00Z')
   const r = classifyByRules(p, now, '明天会下雨')
   assert.equal(r.aspect, 'prospective')
   assert.equal(r.modality, 'prediction')
@@ -127,7 +127,7 @@ test('classify: LLM invalid json → falls back to rules', async () => {
 })
 
 test('extractDate: ISO / 明天 / N天后 / 下周', () => {
-  const now = new Date('2026-07-01T00:00:00')
+  const now = new Date('2026-07-01T00:00:00Z')
   assert.equal(extractDate('2026-12-25 发布', now), '2026-12-25')
   assert.equal(extractDate('明天会下雨', now), '2026-07-02')
   assert.equal(extractDate('3天后到期', now), '2026-07-04')

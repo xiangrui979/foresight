@@ -18,6 +18,7 @@
 import * as fs from 'node:fs'
 import type { Anchor, Aspect, DeriveRoute, Policy } from '../policy.js'
 import type { Store } from '../store.js'
+import { normalizeClock, systemClock, type Clock, type ClockLike } from '../clock.js'
 
 // ── public types ────────────────────────────────────────────────────
 
@@ -267,19 +268,23 @@ function appendUserDoc(entry: DeriveEntry, route: DeriveRoute, deps: DispatchDep
 export class Deriver {
   private lastId = new Map<string, number>()
   private lastCreatedAt = new Map<string, number>()
+  private clock: Clock
 
   constructor(
     private store: Store,
     private llm: LlmCall,
     private policy: Policy,
-  ) {}
+    clock: ClockLike = systemClock,
+  ) {
+    this.clock = normalizeClock(clock)
+  }
 
   /**
    * One derive pass: conversations increment → per-route prompt → LLM →
    * parse → dispatch. Failed batch emits derive.failed, continues others.
    */
   async run(sessionId: string, opts: DeriveRunOptions): Promise<DeriveRunResult> {
-    const now = opts.now ?? Date.now()
+    const now = opts.now ?? this.clock.now()
     const since = this.lastCreatedAt.get(sessionId) ?? 0
     const seenId = this.lastId.get(sessionId) ?? 0
     const fetched = this.store.listConversationsSince(sessionId, since)

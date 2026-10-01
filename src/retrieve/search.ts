@@ -20,6 +20,8 @@ import type { Policy, Aspect } from '../policy.js'
 import type { Anchor } from '../types.js'
 import { behavior } from '../policy.js'
 import { FACTORS, type FactorInput } from './factors.js'
+import { lifecycleEligible } from '../evolve/temporal.js'
+import { systemClock } from '../clock.js'
 
 /** Structural activation floor: entries with activation ≤ this never enter
  *  candidates (suppressed ≈ 0.05 → filtered by design §11). */
@@ -139,7 +141,9 @@ async function searchFull(
     topK: opts.topK ?? opts.k,
   }
 
-  const filtered = structuralFilter(store, merged)
+  // Lifecycle read-path filter (C1/C10): callers are expected to sweep first
+  // (ForeSight.query does); this also hides not-started progressive rows.
+  const filtered = structuralFilter(store, merged).filter((m) => lifecycleEligible(policy, m, now))
 
   let queryVec: Float32Array | null = null
   try {
@@ -261,12 +265,12 @@ export async function search(
   b: Store | string | SearchDeps,
   c?: EmbedProvider | SearchOptions,
   d?: Policy,
-  e: number = Date.now(),
+  e?: number,
   f: SearchOptions = {},
 ): Promise<SearchHit[]> {
   if (typeof a === 'string') {
     if (isStore(b)) {
-      return searchFull(a, b, c as EmbedProvider, d as Policy, e, f)
+      return searchFull(a, b, c as EmbedProvider, d as Policy, e ?? systemClock.now(), f)
     }
     const deps = b as SearchDeps
     return searchFull(a, deps.store, deps.embed, deps.policy, deps.now, (c as SearchOptions) ?? {})

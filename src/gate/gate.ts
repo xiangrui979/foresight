@@ -17,6 +17,7 @@ import type { Memory, Store } from '../store.js'
 import type { ClassifyFn, ClassifyResult } from './classify.js'
 import { buildClassifyFn } from './classify.js'
 import { canWrite } from '../govern/permission.js'
+import { normalizeClock, type ClockLike } from '../clock.js'
 
 export const GATE_MAX_TEXT_CHARS = 2000
 
@@ -51,6 +52,7 @@ export interface GateDeps {
   emit?: (type: string, target: string | null, detail: Record<string, unknown> | null, clause?: string) => void
   embedFn?: (text: string) => Promise<Float32Array | null>
   conflictResolver?: ConflictResolverLike
+  clock?: ClockLike
 }
 
 export interface ConflictResolverLike {
@@ -76,7 +78,7 @@ export async function gateWrite(input: GateWriteInput, deps: GateDeps): Promise<
   const emit = deps.emit ?? ((t, tg, d, c) => store.emit(t, tg, d, c))
   const actor = deps.permission?.actor ?? input.source
   const target = deps.permission?.target ?? 'memories'
-  const now = input.now ?? new Date()
+  const now = input.now ?? new Date(normalizeClock(deps.clock).now())
   const text = (input.text ?? '').trim()
 
   // ── 0. Permission precheck: violation → permission.deny audit + decline
