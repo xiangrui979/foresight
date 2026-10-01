@@ -19,6 +19,7 @@ jobs:
       TZ: ${{ matrix.tz }}
     steps:
       - uses: actions/checkout@v4
+      # pnpm 版本来自 packageManager pin；用 10.x 线兼容 node20 矩阵（pnpm 11 要求 node>=22.13）
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:

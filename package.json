@@ -51,7 +51,7 @@
   "engines": {
     "node": ">=20"
   },
-  "packageManager": "pnpm@11.22.0",
+  "packageManager": "pnpm@10.34.6",
   "license": "MIT",
   "dsh": {
     "bundle": {
