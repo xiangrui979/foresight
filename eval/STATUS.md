@@ -24,8 +24,8 @@
 | 0.3 trace schema v2 + STATUS | ✅ | `36a163f` | schema + `lib/trace.mjs`（validate/SIR 复算）+ 3 条样例；修复 `/lib/` 误忽略 eval/lib |
 | 0.4 eval 脚手架 | ✅ | `a1cfbb2` | runner --help / configs / eval README / artifact ignores |
 | 0.5 成本模型骨架 | ✅ | `7961719` | budget.mjs / cost.mjs / fullcontext 入模（tokensPerCall.reader）/ 双跑 ×2；自检通过 |
-| 0.6 冻结开关 + seed 探针 | ✅ | `(next)` | §14 开关/时间线冻结；`eval/scripts/seed-probe.mjs` 交付；seed 实测 **pending（无 API key）** |
-| 0.7 分类器语言决策门 | ⬜ | — | 默认 A + G1 切换规则 |
+| 0.6 冻结开关 + seed 探针 | ✅ | `d2b4fbe` | §14 开关/时间线冻结；`eval/scripts/seed-probe.mjs` 交付；seed 实测 **pending（无 API key）** |
+| 0.7 分类器语言决策门 | ✅ | `(next)` | §15 默认 A（双语 rules）+ G1 切换规则 + 成本影响 + P1.9 范围冻结 |
 
 ## P1–P5
 

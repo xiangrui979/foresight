@@ -264,11 +264,17 @@
 
 ## 15. 分类器语言决策门（C5，看结果前定规则）
 
-- **A（默认）**：双语 rules 扩展——英文时态/日期标记、`extractDate` 英文相对日期、中英混合；范围由 Task 1.9 交付。
-- **B（备选）**：主实验改用 LLM gate（reader/judge 之外新增分类调用），按 Task 0.5 重估预算并上调上限。
-- **切换规则（冻结）**：G1 时若 A 的 gate-eval 全量（400 条，中英各 200）aspect 准确率 **≥80%** 则维持 A，否则切 B。P0 预实验可先用其中 150/语 做 smoke，**不作最终判据**。
-- 无论选哪个，adapter 必须报告写入接受率（D7）。
-- **终审在 G1（Task 1.9 实测后）**，结论与本条实测值追加到 Changelog。
+**背景（代码证据）**：现有 rules 分类器只识别中文强信号（`src/gate/classify.ts:40-43`：会/要/了过/正在）；英文无标记陈述一律落入 `gnomic`（`classify.ts:118-124`），而 gate 明确拒绝 gnomic 写入（`src/gate/gate.ts:242-248`）。因此 LME/LoCoMo 英文 turn 几乎全部拒写、记忆库≈空（C5）。本决策门在看结果前冻结「默认方案 + 切换规则」，G1 按 Task 1.9 全量实测终审（D16，避免循环依赖）。
+
+- **A（默认）**：双语 rules 扩展——英文时态/日期标记、`extractDate` 英文相对日期、中英混合。
+  - P1.9 交付范围（冻结）：英文时态/体标记（如 did/have done/am doing/will），ISO 与相对日期解析统一 **UTC**（C8 联动），中英混合句式；**不改变 4 aspect × 4 anchor 定义**。
+- **B（备选）**：主实验改用 LLM gate（reader/judge 之外新增分类调用）。
+- **切换规则（冻结）**：G1 时若 A 的 gate-eval 全量（400 条，中英各 200）**aspect 准确率 ≥80%** 则维持 A，否则切 B。P0 预实验可用 150/语 做 smoke，**不作最终判据**。anchor/category/forbidden 准确率与混淆矩阵作为报告项（不设切换门槛）。
+- **成本影响**：
+  - A 增量 LLM 成本 = **¥0**（rules，0 调用），与「确定性优先 / 无 key 可跑」一致；
+  - B 增量 = `turns × 1` 分类调用/单元（`cost.mjs` 以 `classifyPerTurn=1` 建模）；若 G1 切 B，按 Task 0.5 执行日价目重估总调用与成本，并**经 Changelog 上调 `EVAL_MAX_CNY`**（默认 ¥300 可能不足）。
+- 无论选哪个，adapter 必须报告写入接受率（D7/R14）；英文接受率 <50% 触发 R14 处置。
+- **终审在 G1（Task 1.9 实测后）**：实测值与 A/B 决定追加到 Changelog；冻结后的默认与切换规则不得事后更改。
 
 ---
 
@@ -278,6 +284,7 @@
 |---|---|---|
 | 2026-10-01 | pre-reg-v1 | 初次预注册（Task 0.1）；对应计划 v3.1 |
 | 2026-10-01 | pre-reg-v1.1 | Task 0.6：§14 十项开关 + 时间线目标冻结；seed 探针脚本交付（`eval/scripts/seed-probe.mjs`），实测 pending（无 API key，D19 替代方案已预注册于 §11.1） |
+| 2026-10-01 | pre-reg-v1.2 | Task 0.7：§15 分类器语言决策门定稿（默认 A + G1 切换规则 + 成本影响 + P1.9 范围冻结） |
 
 ## Deviations
 
