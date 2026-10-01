@@ -41,20 +41,21 @@
 | 1.3 Trace + token 记账 + 预算护栏 | ✅ | `1ea22b0` | 99/99；`--selfcheck` 5 题离线端到端（真实 Store/search/render + ManualClock）→ trace v2 校验通过；运行时 SIR-i/SIR 与 `trace.mjs --sir` 一致；tokenizer=estimate@v1（偏离已登记） |
 | 1.4 LLM 缓存 + judge 基建（D1/D6） | ✅ | `13fbec7` | 缓存 0 调用 / --no-cache 真调用 / 断网命中 / 退避重试自检通过；judge prompt 冻结 `42d5fff0-...` + 篡改检测 + 可插拔 |
 | 1.5 消融开关 + 7 系统 + 预算渲染（D8/C6/D17） | ✅ | `8be880d` | 106/106（旧 99 + 新 7）；开关单测（lifecycle/conflict/classifier）；插件侧预算 + eval render-budget 同 counter；7 系统 × 3 题 dry-run = 21 trace 校验通过；D17 混合口径已登记 deviation |
-| 1.6 Bench adapter（D7/D14） | ✅ | `(next)` | SPEC 冻结；`rules@v1` 标注器；3 adapter + golden 各 5/5 自检通过；`extract.mjs` 抽取接口；人工签核列 G1 前 |
-
-**Checkpoint-1（Task 1.1–1.4）✅ 2026-10-01**：build ✅ · 99/99（当时） · TZ 双跑 ✅ · trace/cost/budget/llm/judge/runner selfcheck ✅。
-| 1.6 Bench adapter（D7/D14） | ⬜ | — | SPEC 冻结 + golden 5/5 |
-| 1.7 基准拉取与许可核验 | ⬜ | — | SHA256/题量回填 DECISIONS |
+| 1.6 Bench adapter（D7/D14） | ✅ | `87ffe27` | SPEC 冻结；`rules@v1` 标注器；3 adapter + golden 各 5/5 自检通过；`extract.mjs` 抽取接口；人工签核列 G1 前 |
+| 1.7 基准拉取与许可核验 | ✅ | `(next)` | LME cleaned s+oracle（MIT；s SHA256 与上游记录一致；KU=78/abstention=30 确认）；LoCoMo（CC BY-NC 4.0 实测；cat2=321/cat5=446）；`fetch/check.mjs` 通过；数据不入库 |
 | 1.8 评分器（score/stats 骨架） | ⬜ | — | |
 | 1.9 Gate/aspect×anchor 分类器评估（C5，400 条） | ⬜ | — | G1 终审 A/B |
 | 1.10 Smoke 矩阵（G1 门槛） | ⬜ | — | 7/7 + 机制清单 |
+
+**Checkpoint-1（Task 1.1–1.4）✅ 2026-10-01**：build ✅ · 99/99（当时） · TZ 双跑 ✅ · trace/cost/budget/llm/judge/runner selfcheck ✅。
+
+**Checkpoint-2（Task 1.5–1.7）✅ 2026-10-01**：7 系统 × 3 题 dry-run 21 trace ✅ · 3 adapter golden 各 5/5 ✅ · 数据 `fetch --check` 全绿（LME s SHA256 与上游独立记录一致）✅。
 
 ## P1–P5
 
 | 阶段 | 状态 | 备注 |
 |---|---|---|
-| P1 机制修复与评估基建（C1–C11，10 task，2 checkpoint） | 🔄 | 1.1 ✅；未过 G1 不得进入 P2 |
+| P1 机制修复与评估基建（C1–C11，10 task，2 checkpoint） | 🔄 | 1.1–1.7 ✅（Checkpoint-1/2 通过）；未过 G1 不得进入 P2 |
 | P2 主实验（pilot → 主矩阵 → 消融 → 人审 → 冻结） | ⬜ | |
 | P3 bench-timesuite（7 类 × 60 + 留出集 + 盲评 140） | ⬜ | |
 | P4 分析与写作（统计图表 → 草稿 → 合规审计 → 评审 → G3.5） | ⬜ | |

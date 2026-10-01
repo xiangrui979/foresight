@@ -69,8 +69,8 @@
 
 | 数据集 | 用途 | 子集 | 版本/许可 |
 |---|---|---|---|
-| **LongMemEval（ICLR 2025, MIT）** | 主（H2）+ H1 辅证 | cleaned **KU 全量**；temporal-reasoning（次要）；30 abstention（控制） | cleaned 2025/09；SHA256 于 Task 1.7 回填；污染风险入风险册 |
-| **LoCoMo（ACL 2024）** | H2 次要辅证（cat2）；控制（cat5） | `locomo10.json` cat2、cat5 | 许可条款以 `fetch --check` 实测为准（CC BY-NC 4.0 待核验） |
+| **LongMemEval（ICLR 2025, MIT）** | 主（H2）+ H1 辅证 | cleaned **KU 全量（78，实测确认）**；temporal-reasoning（133，次要）；30 abstention（控制） | hub rev `98d7416c`（2025-09-19），下载 2026-10-01；`longmemeval_s_cleaned.json` SHA256 `d6f21ea9d60a0d56f34a05b609c79c88a451d2ae03597821ea3d5a9678c3a442`（与上游独立记录一致）；`longmemeval_oracle.json` SHA256 `821a2034d219ab45…`；MIT |
+| **LoCoMo（ACL 2024）** | H2 次要辅证（cat2）；控制（cat5） | `locomo10.json`：10 段对话 / 1986 QA；cat1=282、**cat2=321**、cat3=96、cat4=841、**cat5=446** | 许可实测为 **CC BY-NC 4.0**（LICENSE.txt，2026-10-01）；SHA256 `79fa87e90f040813…`；仅非商业研究、不再分发 |
 | **timesuite（自建）** | H1 主 + 机制表 | 7 类 × 60 ≈ 420 题；含 ≥120 独立生成留出集；盲评 140（每类 20） | 生成 SPEC 冻结于 P3.1 |
 | LongMemEval-V2（2026/05） | 不进 B 主实验 | C-extension Track C 选项 + related work | P4 查新 |
 
@@ -302,6 +302,7 @@
 | 2026-10-01 | pre-reg-v1.6 | Task 1.4：LLM 内容哈希缓存 + `--no-cache` + 退避重试 + usage 记账（`eval/lib/llm.mjs`）；judge 冻结机制（文件名 hash 前缀强制校验、篡改检测、可插拔）+ 官方 judge prompt 冻结 `eval/judge/42d5fff0-judge-correctness.md`（judge_id `gpt-4o@42d5fff0dcb3`） |
 | 2026-10-01 | pre-reg-v1.7 | Task 1.5：消融开关（`lifecycle.enabled` / `activation.conflict_enabled` / `gate.classifier`）走 policy + 单测；插件侧 token 预算（`injection.memories_budget_tokens`，`src/tokens.ts` 单一估算器）+ eval `render-budget.mjs`；7 系统（foresight/nolifecycle/recency/rag/summary/fullcontext/closedbook）；`runner --dry-run` 21 条 trace 校验通过 |
 | 2026-10-01 | pre-reg-v1.8 | Task 1.6：`adapters/SPEC.md` 冻结（隔离/抽取/双角色/UTC/探针/答案/泄漏/stale）；`lib/stale.mjs` `rules@v1` 自检通过；三基准 adapter + golden 各 5/5 自动核对；`extract.mjs` 抽取器接口冻结；人工签核在 G1 前完成 |
+| 2026-10-01 | pre-reg-v1.9 | Task 1.7：基准拉取完成 — LME cleaned（MIT，rev 98d7416c，s SHA256 `d6f21ea9…` 与上游独立记录一致；KU=78、abstention=30 实测确认）；LoCoMo（CC BY-NC 4.0 实测；1986 QA，cat2=321/cat5=446）；`--check` 全绿；数据仅本地 `eval/data/`（gitignore，不再分发）；LME-M（~2.7GB）留待 C-extension |
 | 2026-10-01 | pre-reg-v1.3 | Task 0.6 补测：seed 支持性探针实测完成（`deepseek-v4-flash`，seed=0 重放 3 次：`outputs_identical=false`、无接口错误 → `seed_effective`）；§4 回填；归档 `eval/results/seed-probe_deepseek-v4-flash.json`；C-extension 维持 seed 方案、§11.1 不变；Deviations「无 API key 未实测」偏离消解 |
 
 ## Deviations
