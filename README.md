@@ -160,7 +160,7 @@ src/
 ```bash
 pnpm install
 pnpm build     # tsc
-pnpm test      # node --test tests/ — no external services required
+pnpm test      # node --test — no external services required
 ```
 
 All tests run against an in-memory/temp store and a fake embedder — the suite

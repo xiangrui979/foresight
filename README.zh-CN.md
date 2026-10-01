@@ -126,7 +126,7 @@ src/
 ```bash
 pnpm install
 pnpm build     # tsc
-pnpm test      # node --test tests/ — 无需外部服务
+pnpm test      # node --test — 无需外部服务
 ```
 
 所有测试针对内存/临时存储与假 embedder 运行——整套测试在干净机器上通过，不需要 Ollama、不需要 API key、不需要数据目录。
