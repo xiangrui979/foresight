@@ -7,7 +7,7 @@
 
 | Gate | 判据 | 状态 |
 |---|---|---|
-| G0（P0 末） | 预注册提交；CI 绿；分类器默认+切换规则冻结；seed 支持性入档；风险签字 | 🔄 进行中 |
+| G0（P0 末） | 预注册提交；CI 绿；分类器默认+切换规则冻结；seed 支持性入档；风险签字 | 🟡 条件性通过（预注册/分类器已冻结；CI 远端首跑、seed 实测 pending） |
 | G1（P1 末） | smoke 7/7；golden 5/5；机制修复 C1–C11 通过；成本误差 <15%；C5 终审；stale 抽检 ≥90% | ⬜ |
 | G2（P2 pilot 末） | 仿真功效完成；样本量/扩样决策落 DECISIONS；judge 人审 ≥80% | ⬜ |
 | G3（P2 末） | 矩阵无缺失格；`--no-cache` 双跑 Δ 报告；κ ≥0.7 | ⬜ |
@@ -25,7 +25,9 @@
 | 0.4 eval 脚手架 | ✅ | `a1cfbb2` | runner --help / configs / eval README / artifact ignores |
 | 0.5 成本模型骨架 | ✅ | `7961719` | budget.mjs / cost.mjs / fullcontext 入模（tokensPerCall.reader）/ 双跑 ×2；自检通过 |
 | 0.6 冻结开关 + seed 探针 | ✅ | `d2b4fbe` | §14 开关/时间线冻结；`eval/scripts/seed-probe.mjs` 交付；seed 实测 **pending（无 API key）** |
-| 0.7 分类器语言决策门 | ✅ | `(next)` | §15 默认 A（双语 rules）+ G1 切换规则 + 成本影响 + P1.9 范围冻结 |
+| 0.7 分类器语言决策门 | ✅ | `278241a` | §15 默认 A（双语 rules）+ G1 切换规则 + 成本影响 + P1.9 范围冻结 |
+
+**P0 收尾验证（2026-10-01，本机 Node v24.11.1）**：`pnpm build` ✅ · `pnpm test` 80/80 ✅ · `trace --validate` 3/3 ✅ · `cost/budget --selfcheck` ✅ · `runner --help` ✅（exit 0）。
 
 ## P1–P5
 
