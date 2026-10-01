@@ -2,7 +2,7 @@
 
 ## smoke-offline-1 · 2026-10-01
 
-- commit: `dcfde34` · offline stub reader（无 LLM 调用；真实 reader/judge 需 key）
+- commit: `7e9f77b` · offline stub reader（无 LLM 调用；真实 reader/judge 需 key）
 - 20 items × 7 systems = 140 traces · budget=2000 tokens
 - cost: calls=0 · ¥0（离线）· tokenizer=estimate@v1 (cl100k_base unavailable)
 - trace: eval/results/smoke/traces.jsonl（校验通过）· 主表: eval/results/smoke/summary.md
