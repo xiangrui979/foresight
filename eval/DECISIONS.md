@@ -305,6 +305,7 @@
 | 2026-10-01 | pre-reg-v1.9 | Task 1.7：基准拉取完成 — LME cleaned（MIT，rev 98d7416c，s SHA256 `d6f21ea9…` 与上游独立记录一致；KU=78、abstention=30 实测确认）；LoCoMo（CC BY-NC 4.0 实测；1986 QA，cat2=321/cat5=446）；`--check` 全绿；数据仅本地 `eval/data/`（gitignore，不再分发）；LME-M（~2.7GB）留待 C-extension |
 | 2026-10-01 | pre-reg-v1.10 | Task 1.8：评分器 `eval/score.mjs` + 统计骨架 `eval/lib/stats.mjs`（McNemar exact / paired bootstrap CI / Holm / BH / 效应量 / seeded，自检通过）；输出 JSON+markdown+10 条人工抽查样本；对 dry-run 产出 foresight vs recency 配对表（D18：20 题 smoke 表在 1.10 替换）；人工抽查 10 条待签核 |
 | 2026-10-01 | pre-reg-v1.11 | 全局改名（用户指令）：reader/LLM 默认模型名 `deepseek-v4-flash` → **`deepseek-flash`**（`src/defaults.ts`、templates、README、eval 脚本/样例 trace、DECISIONS §4/§7/§10）；无既有主实验结果受影响；P0.6 seed 探针归档与历史记录保留原模型名以如实留痕 |
+| 2026-10-01 | pre-reg-v1.12 | Task 1.9（离线部分）：双语 rules 扩展（英文时态/相对日期 + 中英混合 + CN 计划/未然 + ISO 区间/开放锚）；gate-eval 400 条冻结（zh/en 各 200，含 40 条对抗盲点如实计错）：**rules aspect 90.0%**（zh 90.0 / en 90.0 / hard 71.4%）→ **PASS，G1 维持方案 A**（切换规则不触发）；CI 门槛测试守住 ≥80%。LLM 对照臂 pending（需 key，见 Deviations）；第二标注者 κ/AC1 待人工抽检 ≥40 条（G1 前） |
 | 2026-10-01 | pre-reg-v1.3 | Task 0.6 补测：seed 支持性探针实测完成（`deepseek-v4-flash`，seed=0 重放 3 次：`outputs_identical=false`、无接口错误 → `seed_effective`）；§4 回填；归档 `eval/results/seed-probe_deepseek-v4-flash.json`；C-extension 维持 seed 方案、§11.1 不变；Deviations「无 API key 未实测」偏离消解 |
 
 ## Deviations
@@ -315,3 +316,5 @@
 | 2026-10-01 | （消解）seed 支持性实测补测完成：探针已执行并回填 §4 | 环境 key 临时注入提供 | 原偏离无遗留影响 | 已执行 `eval/scripts/seed-probe.mjs`；归档见 §4 |
 | 2026-10-01 | H3 token 计数使用 `estimate@v1` 估算器（非冻结的 cl100k_base） | tiktoken 未安装；本地 pnpm 11.22 与 CI pin（10.34.6）版本线冲突，安装会扰动 lockfile | 所有系统使用同一 counter → 等预算与相对比较有效；绝对 token 预算为估算口径 | P1.5 统一预算渲染沿用同一 counter；若安装 tiktoken 精确计数须在 Changelog 登记并评估对已产结果的影响 |
 | 2026-10-01 | **D17 混合口径**：插件侧预算已实现（`renderMemories` 读 `injection.memories_budget_tokens`），但 eval 的 ForeSight `tool_retrieval` 通道仍由 eval 统一渲染器（`render-budget.mjs`，同 counter）截断 shipped search 结果 | 单一实现优先项①对 system_prompt 通道成立；tool 检索通道的 shipped 路径无预算参数，强行下沉会改动检索契约 | H3 主报告按 `channel`（system_prompt vs tool_retrieval）分层；跨系统同 counter 同预算仍有效 | 论文显式声明该评估口径；Task 4.2 披露；若下沉 tool 通道预算则登记 changelog 并重跑 H3 |
+| 2026-10-01 | gate-eval LLM 对照臂未运行（P1.9） | 环境无 `DEEPSEEK_API_KEY` | A 臂 90.0% ≥80% 已足以执行 G1 切换规则（维持 A）；LLM 臂仅论文报告项 | key 就绪后 `node eval/gate-eval/report.mjs --llm` 补报告并回填 Changelog |
+| 2026-10-01 | gate-eval 第二标注者 κ/AC1 未采集（P1.9） | 单人项目（solo + 学长抽检） | 报告标注 n/a；不影响 A/B 切换判据 | G1 前人工抽检 ≥40 条，补 κ/AC1 到报告附录 |

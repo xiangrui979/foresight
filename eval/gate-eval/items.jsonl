@@ -1,0 +1,400 @@
+{"id":"gzh-001","lang":"zh","text":"部署任务正在进行中","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-002","lang":"zh","text":"接口联调正在进行中","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-003","lang":"zh","text":"模型训练正在进行中","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-004","lang":"zh","text":"数据库迁移正在进行中","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-005","lang":"zh","text":"文档撰写正在进行中","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-006","lang":"zh","text":"回归测试正在进行中","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-007","lang":"zh","text":"页面重构正在进行中","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-008","lang":"zh","text":"数据标注正在进行中","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-009","lang":"zh","text":"缓存服务正在进行中","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-010","lang":"zh","text":"日志系统正在进行中","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-011","lang":"zh","text":"部署任务正在进行中","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-012","lang":"zh","text":"接口联调正在进行中","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-013","lang":"zh","text":"模型训练正在进行中","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-014","lang":"zh","text":"数据库迁移正在进行中","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-015","lang":"zh","text":"文档撰写正在进行中","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-016","lang":"zh","text":"数据库迁移还在跑","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-017","lang":"zh","text":"文档撰写还在跑","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-018","lang":"zh","text":"回归测试还在跑","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-019","lang":"zh","text":"页面重构还在跑","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-020","lang":"zh","text":"数据标注还在跑","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-021","lang":"zh","text":"缓存服务还在跑","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-022","lang":"zh","text":"日志系统还在跑","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-023","lang":"zh","text":"部署任务还在跑","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-024","lang":"zh","text":"接口联调还在跑","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-025","lang":"zh","text":"模型训练还在跑","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gzh-026","lang":"zh","text":"部署任务在 2026-01-05 到 2026-02-10 期间进行中","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-027","lang":"zh","text":"接口联调在 2026-02-10 到 2026-03-15 期间进行中","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-028","lang":"zh","text":"模型训练在 2026-03-15 到 2026-04-20 期间进行中","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-029","lang":"zh","text":"数据库迁移在 2026-04-20 到 2026-05-25 期间进行中","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-030","lang":"zh","text":"文档撰写在 2026-05-25 到 2026-06-30 期间进行中","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-031","lang":"zh","text":"回归测试在 2026-06-30 到 2026-07-04 期间进行中","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-032","lang":"zh","text":"页面重构在 2026-07-04 到 2026-08-09 期间进行中","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-033","lang":"zh","text":"数据标注在 2026-08-09 到 2026-09-14 期间进行中","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-034","lang":"zh","text":"缓存服务在 2026-09-14 到 2026-10-19 期间进行中","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-035","lang":"zh","text":"日志系统在 2026-10-19 到 2026-01-05 期间进行中","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-036","lang":"zh","text":"部署任务在 2026-01-05 到 2026-02-10 期间进行中","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-037","lang":"zh","text":"接口联调在 2026-02-10 到 2026-03-15 期间进行中","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-038","lang":"zh","text":"模型训练在 2026-03-15 到 2026-04-20 期间进行中","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-039","lang":"zh","text":"数据库迁移在 2026-04-20 到 2026-05-25 期间进行中","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-040","lang":"zh","text":"文档撰写在 2026-05-25 到 2026-06-30 期间进行中","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-041","lang":"zh","text":"自 2026-01-05 以来 部署任务 持续进行","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gzh-042","lang":"zh","text":"自 2026-02-10 以来 接口联调 持续进行","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gzh-043","lang":"zh","text":"自 2026-03-15 以来 模型训练 持续进行","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gzh-044","lang":"zh","text":"自 2026-04-20 以来 数据库迁移 持续进行","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gzh-045","lang":"zh","text":"自 2026-05-25 以来 文档撰写 持续进行","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gzh-046","lang":"zh","text":"自 2026-06-30 以来 回归测试 持续进行","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gzh-047","lang":"zh","text":"自 2026-07-04 以来 页面重构 持续进行","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gzh-048","lang":"zh","text":"自 2026-08-09 以来 数据标注 持续进行","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gzh-049","lang":"zh","text":"自 2026-09-14 以来 缓存服务 持续进行","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gzh-050","lang":"zh","text":"自 2026-10-19 以来 日志系统 持续进行","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gzh-051","lang":"zh","text":"部署任务已完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-052","lang":"zh","text":"接口联调已完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-053","lang":"zh","text":"模型训练已完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-054","lang":"zh","text":"数据库迁移已完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-055","lang":"zh","text":"文档撰写已完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-056","lang":"zh","text":"回归测试已完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-057","lang":"zh","text":"页面重构已完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-058","lang":"zh","text":"数据标注已完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-059","lang":"zh","text":"缓存服务已完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-060","lang":"zh","text":"日志系统已完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-061","lang":"zh","text":"部署任务已于 2026-01-05 完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-062","lang":"zh","text":"接口联调已于 2026-02-10 完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-063","lang":"zh","text":"模型训练已于 2026-03-15 完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-064","lang":"zh","text":"数据库迁移已于 2026-04-20 完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-065","lang":"zh","text":"文档撰写已于 2026-05-25 完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-066","lang":"zh","text":"回归测试已于 2026-06-30 完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-067","lang":"zh","text":"页面重构已于 2026-07-04 完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-068","lang":"zh","text":"数据标注已于 2026-08-09 完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-069","lang":"zh","text":"缓存服务已于 2026-09-14 完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-070","lang":"zh","text":"日志系统已于 2026-10-19 完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-071","lang":"zh","text":"部署任务已于 2026-01-05 完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-072","lang":"zh","text":"接口联调已于 2026-02-10 完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-073","lang":"zh","text":"模型训练已于 2026-03-15 完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-074","lang":"zh","text":"数据库迁移已于 2026-04-20 完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-075","lang":"zh","text":"文档撰写已于 2026-05-25 完成","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-076","lang":"zh","text":"部署任务在 2026-01-05 到 2026-03-15 期间完成","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-077","lang":"zh","text":"接口联调在 2026-02-10 到 2026-04-20 期间完成","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-078","lang":"zh","text":"模型训练在 2026-03-15 到 2026-05-25 期间完成","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-079","lang":"zh","text":"数据库迁移在 2026-04-20 到 2026-06-30 期间完成","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-080","lang":"zh","text":"文档撰写在 2026-05-25 到 2026-07-04 期间完成","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-081","lang":"zh","text":"回归测试在 2026-06-30 到 2026-08-09 期间完成","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-082","lang":"zh","text":"页面重构在 2026-07-04 到 2026-09-14 期间完成","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-083","lang":"zh","text":"数据标注在 2026-08-09 到 2026-10-19 期间完成","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-084","lang":"zh","text":"缓存服务在 2026-09-14 到 2026-01-05 期间完成","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-085","lang":"zh","text":"日志系统在 2026-10-19 到 2026-02-10 期间完成","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gzh-086","lang":"zh","text":"部署任务做过","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-087","lang":"zh","text":"接口联调做过","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-088","lang":"zh","text":"模型训练做过","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-089","lang":"zh","text":"数据库迁移做过","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-090","lang":"zh","text":"文档撰写做过","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-091","lang":"zh","text":"部署任务已经结束","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-092","lang":"zh","text":"接口联调已经结束","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-093","lang":"zh","text":"模型训练已经结束","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-094","lang":"zh","text":"数据库迁移已经结束","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-095","lang":"zh","text":"文档撰写已经结束","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-096","lang":"zh","text":"回归测试已经结束","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-097","lang":"zh","text":"页面重构已经结束","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-098","lang":"zh","text":"数据标注已经结束","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-099","lang":"zh","text":"缓存服务已经结束","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-100","lang":"zh","text":"日志系统已经结束","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gzh-101","lang":"zh","text":"明天会发布新版本","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-102","lang":"zh","text":"明天会开始测试","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-103","lang":"zh","text":"明天会迁移数据","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-104","lang":"zh","text":"明天会重构模块","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-105","lang":"zh","text":"明天会调整配置","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-106","lang":"zh","text":"明天会更新文档","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-107","lang":"zh","text":"明天会清理缓存","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-108","lang":"zh","text":"明天会扩容集群","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-109","lang":"zh","text":"明天会发布新版本","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-110","lang":"zh","text":"明天会开始测试","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-111","lang":"zh","text":"明天会迁移数据","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-112","lang":"zh","text":"明天会重构模块","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-113","lang":"zh","text":"明天会调整配置","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-114","lang":"zh","text":"明天会更新文档","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-115","lang":"zh","text":"明天会清理缓存","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-116","lang":"zh","text":"部署任务将于 2026-01-05 进行","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-117","lang":"zh","text":"接口联调将于 2026-02-10 进行","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-118","lang":"zh","text":"模型训练将于 2026-03-15 进行","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-119","lang":"zh","text":"数据库迁移将于 2026-04-20 进行","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-120","lang":"zh","text":"文档撰写将于 2026-05-25 进行","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-121","lang":"zh","text":"用户计划 2026-01-05 发布新版本","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-122","lang":"zh","text":"用户计划 2026-02-10 开始测试","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-123","lang":"zh","text":"用户计划 2026-03-15 迁移数据","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-124","lang":"zh","text":"用户计划 2026-04-20 重构模块","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-125","lang":"zh","text":"用户计划 2026-05-25 调整配置","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-126","lang":"zh","text":"用户计划 2026-06-30 更新文档","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-127","lang":"zh","text":"用户计划 2026-07-04 清理缓存","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-128","lang":"zh","text":"用户计划 2026-08-09 扩容集群","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-129","lang":"zh","text":"用户计划 2026-09-14 发布新版本","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-130","lang":"zh","text":"用户计划 2026-10-19 开始测试","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-131","lang":"zh","text":"用户打算迁移数据","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-132","lang":"zh","text":"用户打算重构模块","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-133","lang":"zh","text":"用户打算调整配置","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-134","lang":"zh","text":"用户打算更新文档","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-135","lang":"zh","text":"用户打算清理缓存","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-136","lang":"zh","text":"用户打算扩容集群","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-137","lang":"zh","text":"用户打算发布新版本","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-138","lang":"zh","text":"用户打算开始测试","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-139","lang":"zh","text":"用户打算迁移数据","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-140","lang":"zh","text":"用户打算重构模块","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gzh-141","lang":"zh","text":"迭代还没开始","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-142","lang":"zh","text":"迭代还没开始","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-143","lang":"zh","text":"迭代还没开始","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-144","lang":"zh","text":"迭代还没开始","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-145","lang":"zh","text":"迭代还没开始","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-146","lang":"zh","text":"迭代还没开始","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-147","lang":"zh","text":"迭代还没开始","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-148","lang":"zh","text":"迭代还没开始","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-149","lang":"zh","text":"迭代还没开始","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-150","lang":"zh","text":"迭代还没开始","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-151","lang":"zh","text":"用户喜欢深色主题","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-152","lang":"zh","text":"用户喜欢简洁的报告","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-153","lang":"zh","text":"用户喜欢中文回复","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-154","lang":"zh","text":"用户喜欢单元测试","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-155","lang":"zh","text":"用户喜欢类型标注","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-156","lang":"zh","text":"用户喜欢本地模型","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-157","lang":"zh","text":"用户喜欢深色主题","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-158","lang":"zh","text":"用户喜欢简洁的报告","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-159","lang":"zh","text":"用户喜欢中文回复","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-160","lang":"zh","text":"用户喜欢单元测试","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-161","lang":"zh","text":"用户不喝咖啡","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-162","lang":"zh","text":"用户不喝奶茶","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-163","lang":"zh","text":"用户不喝咖啡","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-164","lang":"zh","text":"用户不喝奶茶","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-165","lang":"zh","text":"用户不喝咖啡","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-166","lang":"zh","text":"部署任务的负责人是张工","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-167","lang":"zh","text":"接口联调的负责人是李工","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-168","lang":"zh","text":"模型训练的负责人是王工","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-169","lang":"zh","text":"数据库迁移的负责人是赵工","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-170","lang":"zh","text":"文档撰写的负责人是张工","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-171","lang":"zh","text":"用户习惯使用深色主题","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-172","lang":"zh","text":"用户习惯使用简洁的报告","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-173","lang":"zh","text":"用户习惯使用中文回复","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-174","lang":"zh","text":"用户习惯使用单元测试","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-175","lang":"zh","text":"用户习惯使用类型标注","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-176","lang":"zh","text":"系统默认语言是中文","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-177","lang":"zh","text":"系统默认语言是英文","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-178","lang":"zh","text":"系统默认语言是中文","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-179","lang":"zh","text":"系统默认语言是英文","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-180","lang":"zh","text":"系统默认语言是中文","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gzh-181","lang":"zh","text":"用户不要深色主题","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gzh-182","lang":"zh","text":"用户不要简洁的报告","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gzh-183","lang":"zh","text":"用户不要中文回复","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gzh-184","lang":"zh","text":"用户不要单元测试","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gzh-185","lang":"zh","text":"用户不要类型标注","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gzh-186","lang":"zh","text":"用户不要本地模型","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gzh-187","lang":"zh","text":"用户不要深色主题","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gzh-188","lang":"zh","text":"用户不要简洁的报告","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gzh-189","lang":"zh","text":"用户不要中文回复","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gzh-190","lang":"zh","text":"用户不要单元测试","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gzh-191","lang":"zh","text":"部署任务即将上线","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-192","lang":"zh","text":"接口联调即将上线","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-193","lang":"zh","text":"模型训练即将上线","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-194","lang":"zh","text":"数据库迁移即将上线","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-195","lang":"zh","text":"文档撰写即将上线","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-196","lang":"zh","text":"回归测试即将上线","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-197","lang":"zh","text":"页面重构即将上线","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-198","lang":"zh","text":"数据标注即将上线","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-199","lang":"zh","text":"缓存服务即将上线","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gzh-200","lang":"zh","text":"日志系统即将上线","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gen-001","lang":"en","text":"the deployment is running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-002","lang":"en","text":"the migration is running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-003","lang":"en","text":"the training run is running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-004","lang":"en","text":"the report is running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-005","lang":"en","text":"the release is running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-006","lang":"en","text":"the refactor is running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-007","lang":"en","text":"the review is running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-008","lang":"en","text":"the integration is running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-009","lang":"en","text":"the backup is running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-010","lang":"en","text":"the import is running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-011","lang":"en","text":"the deployment is running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-012","lang":"en","text":"the migration is running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-013","lang":"en","text":"the training run is running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-014","lang":"en","text":"the report is running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-015","lang":"en","text":"the release is running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-016","lang":"en","text":"the report was running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-017","lang":"en","text":"the release was running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-018","lang":"en","text":"the refactor was running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-019","lang":"en","text":"the review was running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-020","lang":"en","text":"the integration was running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-021","lang":"en","text":"the backup was running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-022","lang":"en","text":"the import was running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-023","lang":"en","text":"the deployment was running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-024","lang":"en","text":"the migration was running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-025","lang":"en","text":"the training run was running","gold_aspect":"progressive","gold_anchor_type":"none","hard":false}
+{"id":"gen-026","lang":"en","text":"the deployment is running from 2026-01-05 to 2026-02-10","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gen-027","lang":"en","text":"the migration is running from 2026-02-10 to 2026-03-15","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gen-028","lang":"en","text":"the training run is running from 2026-03-15 to 2026-04-20","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gen-029","lang":"en","text":"the report is running from 2026-04-20 to 2026-05-25","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gen-030","lang":"en","text":"the release is running from 2026-05-25 to 2026-06-30","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gen-031","lang":"en","text":"the refactor is running from 2026-06-30 to 2026-07-04","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gen-032","lang":"en","text":"the review is running from 2026-07-04 to 2026-08-09","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gen-033","lang":"en","text":"the integration is running from 2026-08-09 to 2026-09-14","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gen-034","lang":"en","text":"the backup is running from 2026-09-14 to 2026-10-19","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gen-035","lang":"en","text":"the import is running from 2026-10-19 to 2026-01-05","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gen-036","lang":"en","text":"the deployment is running from 2026-01-05 to 2026-02-10","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gen-037","lang":"en","text":"the migration is running from 2026-02-10 to 2026-03-15","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gen-038","lang":"en","text":"the training run is running from 2026-03-15 to 2026-04-20","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gen-039","lang":"en","text":"the report is running from 2026-04-20 to 2026-05-25","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gen-040","lang":"en","text":"the release is running from 2026-05-25 to 2026-06-30","gold_aspect":"progressive","gold_anchor_type":"interval","hard":true}
+{"id":"gen-041","lang":"en","text":"the deployment has been running since 2026-01-05","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gen-042","lang":"en","text":"the migration has been running since 2026-02-10","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gen-043","lang":"en","text":"the training run has been running since 2026-03-15","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gen-044","lang":"en","text":"the report has been running since 2026-04-20","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gen-045","lang":"en","text":"the release has been running since 2026-05-25","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gen-046","lang":"en","text":"the refactor has been running since 2026-06-30","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gen-047","lang":"en","text":"the review has been running since 2026-07-04","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gen-048","lang":"en","text":"the integration has been running since 2026-08-09","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gen-049","lang":"en","text":"the backup has been running since 2026-09-14","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gen-050","lang":"en","text":"the import has been running since 2026-10-19","gold_aspect":"progressive","gold_anchor_type":"open","hard":true}
+{"id":"gen-051","lang":"en","text":"the deployment has been completed","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-052","lang":"en","text":"the migration has been completed","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-053","lang":"en","text":"the training run has been completed","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-054","lang":"en","text":"the report has been completed","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-055","lang":"en","text":"the release has been completed","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-056","lang":"en","text":"the refactor has been completed","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-057","lang":"en","text":"the review has been completed","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-058","lang":"en","text":"the integration has been completed","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-059","lang":"en","text":"the backup has been completed","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-060","lang":"en","text":"the import has been completed","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-061","lang":"en","text":"the deployment was completed on March 5","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-062","lang":"en","text":"the migration was completed on April 12","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-063","lang":"en","text":"the training run was completed on July 4","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-064","lang":"en","text":"the report was completed on September 21","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-065","lang":"en","text":"the release was completed on November 2","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-066","lang":"en","text":"the refactor was completed on March 5","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-067","lang":"en","text":"the review was completed on April 12","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-068","lang":"en","text":"the integration was completed on July 4","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-069","lang":"en","text":"the backup was completed on September 21","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-070","lang":"en","text":"the import was completed on November 2","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-071","lang":"en","text":"the deployment was completed on March 5","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-072","lang":"en","text":"the migration was completed on April 12","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-073","lang":"en","text":"the training run was completed on July 4","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-074","lang":"en","text":"the report was completed on September 21","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-075","lang":"en","text":"the release was completed on November 2","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-076","lang":"en","text":"the deployment was completed from 2026-01-05 to 2026-03-15","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gen-077","lang":"en","text":"the migration was completed from 2026-02-10 to 2026-04-20","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gen-078","lang":"en","text":"the training run was completed from 2026-03-15 to 2026-05-25","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gen-079","lang":"en","text":"the report was completed from 2026-04-20 to 2026-06-30","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gen-080","lang":"en","text":"the release was completed from 2026-05-25 to 2026-07-04","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gen-081","lang":"en","text":"the refactor was completed from 2026-06-30 to 2026-08-09","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gen-082","lang":"en","text":"the review was completed from 2026-07-04 to 2026-09-14","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gen-083","lang":"en","text":"the integration was completed from 2026-08-09 to 2026-10-19","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gen-084","lang":"en","text":"the backup was completed from 2026-09-14 to 2026-01-05","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gen-085","lang":"en","text":"the import was completed from 2026-10-19 to 2026-02-10","gold_aspect":"perfect","gold_anchor_type":"interval","hard":true}
+{"id":"gen-086","lang":"en","text":"The user moved to Berlin","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-087","lang":"en","text":"The user moved to Lisbon","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-088","lang":"en","text":"The user moved to Osaka","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-089","lang":"en","text":"The user moved to Toronto","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-090","lang":"en","text":"The user moved to Helsinki","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-091","lang":"en","text":"the deployment finished yesterday","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-092","lang":"en","text":"the migration finished yesterday","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-093","lang":"en","text":"the training run finished yesterday","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-094","lang":"en","text":"the report finished yesterday","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-095","lang":"en","text":"the release finished yesterday","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-096","lang":"en","text":"the refactor finished yesterday","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-097","lang":"en","text":"the review finished yesterday","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-098","lang":"en","text":"the integration finished yesterday","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-099","lang":"en","text":"the backup finished yesterday","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-100","lang":"en","text":"the import finished yesterday","gold_aspect":"perfect","gold_anchor_type":"point","hard":false}
+{"id":"gen-101","lang":"en","text":"the deployment will start tomorrow","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-102","lang":"en","text":"the migration will start tomorrow","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-103","lang":"en","text":"the training run will start tomorrow","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-104","lang":"en","text":"the report will start tomorrow","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-105","lang":"en","text":"the release will start tomorrow","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-106","lang":"en","text":"the refactor will start tomorrow","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-107","lang":"en","text":"the review will start tomorrow","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-108","lang":"en","text":"the integration will start tomorrow","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-109","lang":"en","text":"the backup will start tomorrow","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-110","lang":"en","text":"the import will start tomorrow","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-111","lang":"en","text":"the deployment will start tomorrow","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-112","lang":"en","text":"the migration will start tomorrow","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-113","lang":"en","text":"the training run will start tomorrow","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-114","lang":"en","text":"the report will start tomorrow","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-115","lang":"en","text":"the release will start tomorrow","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-116","lang":"en","text":"the deployment will be deployed on March 5","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gen-117","lang":"en","text":"the migration will be deployed on April 12","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gen-118","lang":"en","text":"the training run will be deployed on July 4","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gen-119","lang":"en","text":"the report will be deployed on September 21","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gen-120","lang":"en","text":"the release will be deployed on November 2","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gen-121","lang":"en","text":"The team plans to run the deployment next week","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-122","lang":"en","text":"The team plans to run the migration next week","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-123","lang":"en","text":"The team plans to run the training run next week","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-124","lang":"en","text":"The team plans to run the report next week","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-125","lang":"en","text":"The team plans to run the release next week","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-126","lang":"en","text":"The team plans to run the refactor next week","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-127","lang":"en","text":"The team plans to run the review next week","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-128","lang":"en","text":"The team plans to run the integration next week","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-129","lang":"en","text":"The team plans to run the backup next week","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-130","lang":"en","text":"The team plans to run the import next week","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-131","lang":"en","text":"the deployment is going to run next Monday","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-132","lang":"en","text":"the migration is going to run next Monday","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-133","lang":"en","text":"the training run is going to run next Monday","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-134","lang":"en","text":"the report is going to run next Monday","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-135","lang":"en","text":"the release is going to run next Monday","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-136","lang":"en","text":"the refactor is going to run next Monday","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-137","lang":"en","text":"the review is going to run next Monday","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-138","lang":"en","text":"the integration is going to run next Monday","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-139","lang":"en","text":"the backup is going to run next Monday","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-140","lang":"en","text":"the import is going to run next Monday","gold_aspect":"prospective","gold_anchor_type":"open","hard":false}
+{"id":"gen-141","lang":"en","text":"the deployment has not started yet","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gen-142","lang":"en","text":"the migration has not started yet","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gen-143","lang":"en","text":"the training run has not started yet","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gen-144","lang":"en","text":"the report has not started yet","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gen-145","lang":"en","text":"the release has not started yet","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gen-146","lang":"en","text":"the refactor has not started yet","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gen-147","lang":"en","text":"the review has not started yet","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gen-148","lang":"en","text":"the integration has not started yet","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gen-149","lang":"en","text":"the backup has not started yet","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gen-150","lang":"en","text":"the import has not started yet","gold_aspect":"prospective","gold_anchor_type":"open","hard":true}
+{"id":"gen-151","lang":"en","text":"The user likes green tea","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-152","lang":"en","text":"The user likes dark mode","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-153","lang":"en","text":"The user likes green tea","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-154","lang":"en","text":"The user likes dark mode","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-155","lang":"en","text":"The user likes green tea","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-156","lang":"en","text":"The user likes dark mode","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-157","lang":"en","text":"The user likes green tea","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-158","lang":"en","text":"The user likes dark mode","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-159","lang":"en","text":"The user likes green tea","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-160","lang":"en","text":"The user likes dark mode","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-161","lang":"en","text":"The user does not drink coffee","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-162","lang":"en","text":"The user does not drink alcohol","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-163","lang":"en","text":"The user does not drink coffee","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-164","lang":"en","text":"The user does not drink alcohol","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-165","lang":"en","text":"The user does not drink coffee","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-166","lang":"en","text":"the deployment runs every night","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-167","lang":"en","text":"the migration runs every night","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-168","lang":"en","text":"the training run runs every night","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-169","lang":"en","text":"the report runs every night","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-170","lang":"en","text":"the release runs every night","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-171","lang":"en","text":"The user prefers concise reports","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-172","lang":"en","text":"The user prefers Chinese replies","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-173","lang":"en","text":"The user prefers concise reports","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-174","lang":"en","text":"The user prefers Chinese replies","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-175","lang":"en","text":"The user prefers concise reports","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-176","lang":"en","text":"The user works as a teacher","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-177","lang":"en","text":"The user works as a designer","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-178","lang":"en","text":"The user works as a teacher","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-179","lang":"en","text":"The user works as a designer","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-180","lang":"en","text":"The user works as a teacher","gold_aspect":"gnomic","gold_anchor_type":"none","hard":false}
+{"id":"gen-181","lang":"en","text":"The user is going to the gym","gold_aspect":"progressive","gold_anchor_type":"none","hard":true}
+{"id":"gen-182","lang":"en","text":"The user is going to the office","gold_aspect":"progressive","gold_anchor_type":"none","hard":true}
+{"id":"gen-183","lang":"en","text":"The user is going to the market","gold_aspect":"progressive","gold_anchor_type":"none","hard":true}
+{"id":"gen-184","lang":"en","text":"The user is going to the lab","gold_aspect":"progressive","gold_anchor_type":"none","hard":true}
+{"id":"gen-185","lang":"en","text":"The user is going to the studio","gold_aspect":"progressive","gold_anchor_type":"none","hard":true}
+{"id":"gen-186","lang":"en","text":"The user is going to the gym","gold_aspect":"progressive","gold_anchor_type":"none","hard":true}
+{"id":"gen-187","lang":"en","text":"The user is going to the office","gold_aspect":"progressive","gold_anchor_type":"none","hard":true}
+{"id":"gen-188","lang":"en","text":"The user is going to the market","gold_aspect":"progressive","gold_anchor_type":"none","hard":true}
+{"id":"gen-189","lang":"en","text":"The user is going to the lab","gold_aspect":"progressive","gold_anchor_type":"none","hard":true}
+{"id":"gen-190","lang":"en","text":"The user is going to the studio","gold_aspect":"progressive","gold_anchor_type":"none","hard":true}
+{"id":"gen-191","lang":"en","text":"The will to improve remains","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gen-192","lang":"en","text":"The will to win remains","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gen-193","lang":"en","text":"The will to change remains","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gen-194","lang":"en","text":"The will to learn remains","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gen-195","lang":"en","text":"The will to grow remains","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gen-196","lang":"en","text":"The will to improve remains","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gen-197","lang":"en","text":"The will to win remains","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gen-198","lang":"en","text":"The will to change remains","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gen-199","lang":"en","text":"The will to learn remains","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}
+{"id":"gen-200","lang":"en","text":"The will to grow remains","gold_aspect":"gnomic","gold_anchor_type":"none","hard":true}

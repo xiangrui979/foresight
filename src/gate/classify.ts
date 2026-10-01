@@ -37,10 +37,25 @@ const MODALITIES: readonly Modality[] = ['prediction', 'intention', 'plan', 'com
 
 // ── Chinese morphosyntactic strong-signal subset (mechanical impl of
 //    policy.chinese_markers). Conservative: ambiguous signals → null (decline).
-const MARKER_HUI = /会/
+const MARKER_HUI = /(会|将于|将要)/
 const MARKER_YAO = /要/
+const MARKER_PLAN = /(计划|打算|准备)/
+const MARKER_PENDING = /(还没|尚未|还没有|仍未)/
 const MARKER_DONE = /(了|过|已|完成|结束|做完|搞完)/
-const MARKER_DOING = /(正在|进行中|在跑|在学|在写|在开发|在训练|在运行|在测试|在部署|持续中)/
+const MARKER_DOING = /(正在|进行中|持续进行|在跑|在学|在写|在开发|在训练|在运行|在测试|在部署|持续中)/
+
+// ── English strong signals (bilingual extension, P1.9 / DECISIONS §15) ──
+const EN_WILL = /\b(will|going to|gonna)\b/i
+const EN_PLAN = /\b(plans? to|planned to|intends? to|intended to|expects? to|expected to|about to)\b/i
+const EN_BEEN_ING = /\b(have|has|had)\s+been\s+\w+ing\b/i
+const EN_BE_ING = /\b(am|is|are|was|were)\s+\w+ing\b/i
+const EN_DOING_ADV = /\b(currently|right now|at the moment|in progress)\b/i
+const EN_PERFECT = /\b(have|has|had)\s+(?:\w+ed|done|finished|completed|submitted|sent|bought|moved|met|made|fixed|deployed|graduated|passed|been)\b/i
+const EN_PAST_DONE = /\b(finished|completed|submitted|deployed|graduated|passed|bought|moved|met|fixed|sent|started|closed|released)\b/i
+const EN_PENDING = /\b(not started yet|hasn't started|has not started|yet to start|hasn't begun)\b/i
+
+const ISO_RANGE = /(\d{4}-\d{2}-\d{2})\s*(?:~|-|—|到|至|until|to)\s*(\d{4}-\d{2}-\d{2})/
+const ISO_OPEN = /(?:自|从|since)\s*(\d{4}-\d{2}-\d{2})\s*(?:以来|起)?/i
 
 export interface LlmCaller {
   call(req: {
@@ -76,17 +91,31 @@ export function buildClassifyFn(policy: Policy, llm: LlmCaller | null): Classify
   }
 }
 
-/** Rules classifier: 会/要/了过/在正在/none. Done+doing mixed → null (decline). */
+/**
+ * Rules classifier: CN 会/要/计划/了过/正在 + EN tense markers.
+ * Done+doing mixed → null (decline). Anchor extraction: explicit ISO
+ * range → interval; 自/since → open; explicit/relative date → point;
+ * otherwise aspect default.
+ */
 export function classifyByRules(policy: Policy, now: Date, text: string): ClassifyResult | null {
   const t = text.trim()
   if (!t) return null
+  const today = isoDateUTC(now)
   const hui = MARKER_HUI.test(t)
   const yao = MARKER_YAO.test(t)
-  const done = MARKER_DONE.test(t)
-  const doing = MARKER_DOING.test(t)
+  const plan = MARKER_PLAN.test(t)
+  const pending = MARKER_PENDING.test(t)
+  const will = EN_WILL.test(t)
+  const enPlan = EN_PLAN.test(t)
+  const enPending = EN_PENDING.test(t)
+  const enBeenIng = EN_BEEN_ING.test(t)
+  const enDoing = enBeenIng || EN_BE_ING.test(t) || EN_DOING_ADV.test(t)
+  const enPerfect = (EN_PERFECT.test(t) && !enBeenIng) || EN_PAST_DONE.test(t)
+  const done = MARKER_DONE.test(t) || enPerfect
+  const doing = MARKER_DOING.test(t) || enDoing
   if (done && doing) return null // mixed: mechanics cannot decide
-  const today = isoDateUTC(now)
-  if (hui) {
+
+  if (hui || will) {
     return {
       category: null, aspect: 'prospective',
       anchor: { type: 'open', start: today },
@@ -94,26 +123,33 @@ export function classifyByRules(policy: Policy, now: Date, text: string): Classi
       predictBy: extractDate(t, now), text: t, source: 'rules',
     }
   }
-  if (yao) {
+  if (yao || plan || pending || enPlan || enPending) {
     return {
       category: null, aspect: 'prospective',
       anchor: { type: 'open', start: today },
-      telicity: null, modality: 'intention',
+      telicity: null, modality: plan || enPlan ? 'plan' : 'intention',
       predictBy: null, text: t, source: 'rules',
     }
   }
   if (done) {
     return {
       category: null, aspect: 'perfect',
-      anchor: { type: 'point', start: today },
+      anchor: dateAnchor(t, now, today),
       telicity: null, modality: null,
       predictBy: null, text: t, source: 'rules',
     }
   }
   if (doing) {
+    const interval = ISO_RANGE.exec(t)
+    const open = ISO_OPEN.exec(t)
+    const anchor = interval
+      ? { type: 'interval' as const, start: interval[1], end: interval[2] }
+      : open
+        ? { type: 'open' as const, start: open[1] }
+        : { type: 'none' as const }
     return {
       category: null, aspect: 'progressive',
-      anchor: { type: 'none' },
+      anchor,
       telicity: 'unbounded', modality: null,
       predictBy: null, text: t, source: 'rules',
     }
@@ -125,6 +161,14 @@ export function classifyByRules(policy: Policy, now: Date, text: string): Classi
     telicity: null, modality: null,
     predictBy: null, text: t, source: 'rules',
   }
+}
+
+/** Explicit date anchor (interval beats point); default = point at `today`. */
+function dateAnchor(text: string, now: Date, today: string): Anchor {
+  const interval = ISO_RANGE.exec(text)
+  if (interval) return { type: 'interval', start: interval[1], end: interval[2] }
+  const date = extractDate(text, now)
+  return { type: 'point', start: date ?? today }
 }
 
 // ── LLM prompt ──────────────────────────────────────────────────────────
@@ -265,9 +309,11 @@ const WEEKDAYS: Record<string, number> = { '一': 1, '二': 2, '三': 3, '四': 
 export function extractDate(text: string, now: Date): string | null {
   const iso = text.match(/(\d{4})-(\d{2})-(\d{2})/)
   if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}`
+  // ── Chinese relative dates ──
   if (/明天/.test(text)) return isoDateUTC(new Date(now.getTime() + DAY_MS))
   if (/后天/.test(text)) return isoDateUTC(new Date(now.getTime() + 2 * DAY_MS))
   if (/今天/.test(text)) return isoDateUTC(now)
+  if (/昨天/.test(text)) return isoDateUTC(new Date(now.getTime() - DAY_MS))
   const nw = text.match(/下周([一二三四五六日天])/)
   if (nw && nw[1] in WEEKDAYS) {
     const target = WEEKDAYS[nw[1]]
@@ -278,7 +324,51 @@ export function extractDate(text: string, now: Date): string | null {
   }
   const days = text.match(/(\d+)\s*天(?:后|之内)/)
   if (days) return isoDateUTC(new Date(now.getTime() + Number(days[1]) * DAY_MS))
+  const ago = text.match(/(\d+)\s*天前/)
+  if (ago) return isoDateUTC(new Date(now.getTime() - Number(ago[1]) * DAY_MS))
+  // ── English relative/absolute dates (bilingual extension) ──
+  if (/\btomorrow\b/i.test(text)) return isoDateUTC(new Date(now.getTime() + DAY_MS))
+  if (/\byesterday\b/i.test(text)) return isoDateUTC(new Date(now.getTime() - DAY_MS))
+  if (/\btoday\b/i.test(text)) return isoDateUTC(now)
+  if (/\bday after tomorrow\b/i.test(text)) return isoDateUTC(new Date(now.getTime() + 2 * DAY_MS))
+  const inDays = text.match(/\bin\s+(\d+)\s+days?\b/i)
+  if (inDays) return isoDateUTC(new Date(now.getTime() + Number(inDays[1]) * DAY_MS))
+  const daysAgo = text.match(/\b(\d+)\s+days?\s+ago\b/i)
+  if (daysAgo) return isoDateUTC(new Date(now.getTime() - Number(daysAgo[1]) * DAY_MS))
+  if (/\bnext week\b/i.test(text)) return isoDateUTC(new Date(now.getTime() + 7 * DAY_MS))
+  if (/\blast week\b/i.test(text)) return isoDateUTC(new Date(now.getTime() - 7 * DAY_MS))
+  const nextWd = text.match(/\bnext\s+(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/i)
+  if (nextWd) {
+    const target = EN_WEEKDAYS[nextWd[1].toLowerCase()]
+    let diff = (target - now.getUTCDay() + 7) % 7
+    if (diff === 0) diff = 7
+    return isoDateUTC(new Date(now.getTime() + diff * DAY_MS))
+  }
+  const monthDay = text.match(
+    /\b(?:on\s+)?(january|february|march|april|may|june|july|august|september|october|november|december)\s+(\d{1,2})(?:st|nd|rd|th)?(?:,?\s+(\d{4}))?\b/i,
+  )
+  if (monthDay) {
+    const month = EN_MONTHS[monthDay[1].toLowerCase()]
+    const day = String(Number(monthDay[2])).padStart(2, '0')
+    const year = monthDay[3] ?? String(now.getUTCFullYear())
+    return `${year}-${String(month).padStart(2, '0')}-${day}`
+  }
+  const dayMonth = text.match(
+    /\b(\d{1,2})(?:st|nd|rd|th)?\s+(january|february|march|april|may|june|july|august|september|october|november|december)(?:,?\s+(\d{4}))?\b/i,
+  )
+  if (dayMonth) {
+    const month = EN_MONTHS[dayMonth[2].toLowerCase()]
+    const day = String(Number(dayMonth[1])).padStart(2, '0')
+    const year = dayMonth[3] ?? String(now.getUTCFullYear())
+    return `${year}-${String(month).padStart(2, '0')}-${day}`
+  }
   return null
+}
+
+const EN_WEEKDAYS: Record<string, number> = { monday: 1, tuesday: 2, wednesday: 3, thursday: 4, friday: 5, saturday: 6, sunday: 0 }
+const EN_MONTHS: Record<string, number> = {
+  january: 1, february: 2, march: 3, april: 4, may: 5, june: 6,
+  july: 7, august: 8, september: 9, october: 10, november: 11, december: 12,
 }
 
 /** UTC ISO date (YYYY-MM-DD); timezone-independent by contract (C8). */

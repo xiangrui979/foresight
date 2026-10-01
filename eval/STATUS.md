@@ -43,7 +43,8 @@
 | 1.5 消融开关 + 7 系统 + 预算渲染（D8/C6/D17） | ✅ | `8be880d` | 106/106（旧 99 + 新 7）；开关单测（lifecycle/conflict/classifier）；插件侧预算 + eval render-budget 同 counter；7 系统 × 3 题 dry-run = 21 trace 校验通过；D17 混合口径已登记 deviation |
 | 1.6 Bench adapter（D7/D14） | ✅ | `87ffe27` | SPEC 冻结；`rules@v1` 标注器；3 adapter + golden 各 5/5 自检通过；`extract.mjs` 抽取接口；人工签核列 G1 前 |
 | 1.7 基准拉取与许可核验 | ✅ | `b92d510` | LME cleaned s+oracle（MIT；s SHA256 与上游记录一致；KU=78/abstention=30 确认）；LoCoMo（CC BY-NC 4.0 实测；cat2=321/cat5=446）；`fetch/check.mjs` 通过；数据不入库 |
-| 1.8 评分器（score/stats 骨架） | ✅ | `(next)` | 110/110；stats 自检（McNemar/bootstrap/Holm/BH/效应量）；score 出 JSON+MD+review_sample；dry-run 的 foresight vs recency 配对表已生成；10 条人工抽查待签核（G1 前） |
+| 1.8 评分器（score/stats 骨架） | ✅ | `c1eedd7` | 110/110；stats 自检（McNemar/bootstrap/Holm/BH/效应量）；score 出 JSON+MD+review_sample；dry-run 的 foresight vs recency 配对表已生成；10 条人工抽查待签核（G1 前） |
+| 1.9 Gate/aspect×anchor 分类器评估（C5，400 条） | 🟡 离线完成 | `(next)` | 双语 rules 扩展 + 400 条冻结；**rules aspect 90.0%**（hard 71.4%）→ PASS 维持 A；CI 门槛 ≥80%；LLM 对照臂与 κ/AC1 待 key/人工（已登记 deviation） |
 | 1.9 Gate/aspect×anchor 分类器评估（C5，400 条） | ⬜ | — | G1 终审 A/B |
 | 1.10 Smoke 矩阵（G1 门槛） | ⬜ | — | 7/7 + 机制清单 |
 
