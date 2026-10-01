@@ -37,3 +37,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm test
+      # 离线 smoke 矩阵守卫（G1 机制清单 C1–C3/C5–C8/C10；单组合跑一次即可）
+      - name: smoke matrix (offline)
+        if: matrix.node == '24' && matrix.os == 'ubuntu-latest' && matrix.tz == 'UTC'
+        run: node eval/smoke.mjs

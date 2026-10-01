@@ -8,7 +8,7 @@
 | Gate | 判据 | 状态 |
 |---|---|---|
 | G0（P0 末） | 预注册提交；CI 绿；分类器默认+切换规则冻结；seed 支持性入档；风险签字 | 🟡 条件性通过（预注册/分类器已冻结；seed 已入档；CI 12/12 全绿 2026-10-01）；待关闭：风险签字 |
-| G1（P1 末） | smoke 7/7；golden 5/5；机制修复 C1–C11 通过；成本误差 <15%；C5 终审；stale 抽检 ≥90% | ⬜ |
+| G1（P1 末） | smoke 7/7；golden 5/5；机制修复 C1–C11 通过；成本误差 <15%；C5 终审；stale 抽检 ≥90% | 🟡 离线项全过（smoke 7/7、golden 5/5、机制清单、C5 终审=维持 A）；待 key：真实成本误差；待人工：stale 抽检/10 条评分抽查/golden 签核/κ |
 | G2（P2 pilot 末） | 仿真功效完成；样本量/扩样决策落 DECISIONS；judge 人审 ≥80% | ⬜ |
 | G3（P2 末） | 矩阵无缺失格；`--no-cache` 双跑 Δ 报告；κ ≥0.7 | ⬜ |
 | G4（P3 末） | 机制表完成；failure taxonomy 定稿；同向性检查通过 | ⬜ |
@@ -44,9 +44,8 @@
 | 1.6 Bench adapter（D7/D14） | ✅ | `87ffe27` | SPEC 冻结；`rules@v1` 标注器；3 adapter + golden 各 5/5 自检通过；`extract.mjs` 抽取接口；人工签核列 G1 前 |
 | 1.7 基准拉取与许可核验 | ✅ | `b92d510` | LME cleaned s+oracle（MIT；s SHA256 与上游记录一致；KU=78/abstention=30 确认）；LoCoMo（CC BY-NC 4.0 实测；cat2=321/cat5=446）；`fetch/check.mjs` 通过；数据不入库 |
 | 1.8 评分器（score/stats 骨架） | ✅ | `c1eedd7` | 110/110；stats 自检（McNemar/bootstrap/Holm/BH/效应量）；score 出 JSON+MD+review_sample；dry-run 的 foresight vs recency 配对表已生成；10 条人工抽查待签核（G1 前） |
-| 1.9 Gate/aspect×anchor 分类器评估（C5，400 条） | 🟡 离线完成 | `(next)` | 双语 rules 扩展 + 400 条冻结；**rules aspect 90.0%**（hard 71.4%）→ PASS 维持 A；CI 门槛 ≥80%；LLM 对照臂与 κ/AC1 待 key/人工（已登记 deviation） |
-| 1.9 Gate/aspect×anchor 分类器评估（C5，400 条） | ⬜ | — | G1 终审 A/B |
-| 1.10 Smoke 矩阵（G1 门槛） | ⬜ | — | 7/7 + 机制清单 |
+| 1.9 Gate/aspect×anchor 分类器评估（C5，400 条） | 🟡 离线完成 | `dcfde34` | 双语 rules 扩展 + 400 条冻结；**rules aspect 90.0%**（hard 71.4%）→ PASS 维持 A（G1 C5 终审）；LLM 对照臂与 κ/AC1 待 key/人工（deviation） |
+| 1.10 Smoke 矩阵（G1 门槛） | 🟡 离线完成 | `(next)` | 140 trace 校验通过；机制清单 C1/C2/C3/C5/C6/C7/C8/C10 全 PASS；foresight 0.90 vs recency 0.60；真实 reader/judge 与成本对账待 key |
 
 **Checkpoint-1（Task 1.1–1.4）✅ 2026-10-01**：build ✅ · 99/99（当时） · TZ 双跑 ✅ · trace/cost/budget/llm/judge/runner selfcheck ✅。
 

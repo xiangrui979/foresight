@@ -149,8 +149,11 @@ async function main(argv) {
   const traces = traceFiles.flatMap((f) => loadTraces(f))
   const stats = await import('./lib/stats.mjs')
   const summary = summarize(traces)
-  const pairArg = opt('--pair')
-  const pairs = pairArg ? [pairSystems(traces, ...pairArg.split(','), { stats })] : []
+  const pairArgs = []
+  for (let i = 0; i < argv.length; i++) {
+    if (argv[i] === '--pair' && argv[i + 1]) pairArgs.push(argv[++i])
+  }
+  const pairs = pairArgs.map((s) => pairSystems(traces, ...s.split(','), { stats }))
   const out = opt('--out') ?? path.join(HERE, 'results', 'summary.json')
   const md = opt('--md') ?? path.join(HERE, 'results', 'summary.md')
   fs.mkdirSync(path.dirname(out), { recursive: true })

@@ -1,0 +1,156 @@
+{
+  "generated_at": "2026-10-01T15:43:12.182Z",
+  "traces": [
+    "D:\\Project\\AICode\\ForeSight\\eval\\results\\smoke\\traces.jsonl"
+  ],
+  "summary": {
+    "closedbook": {
+      "n": 20,
+      "answered": 20,
+      "accuracy": 0.5,
+      "sir_i": null,
+      "sir": 0,
+      "injected_total": 0,
+      "stale_injected": 0,
+      "tokens_mean": 0,
+      "tokens_p95": 0,
+      "llm_calls": 0
+    },
+    "summary": {
+      "n": 20,
+      "answered": 20,
+      "accuracy": 0.4,
+      "sir_i": 0.1,
+      "sir": 0.1,
+      "injected_total": 20,
+      "stale_injected": 2,
+      "tokens_mean": 10.55,
+      "tokens_p95": 18,
+      "llm_calls": 0
+    },
+    "fullcontext": {
+      "n": 20,
+      "answered": 20,
+      "accuracy": 0.4,
+      "sir_i": 0.09523809523809523,
+      "sir": 0.1,
+      "injected_total": 21,
+      "stale_injected": 2,
+      "tokens_mean": 10.55,
+      "tokens_p95": 18,
+      "llm_calls": 0
+    },
+    "rag": {
+      "n": 20,
+      "answered": 20,
+      "accuracy": 0.5,
+      "sir_i": null,
+      "sir": 0,
+      "injected_total": 0,
+      "stale_injected": 0,
+      "tokens_mean": 0,
+      "tokens_p95": 0,
+      "llm_calls": 0
+    },
+    "recency": {
+      "n": 20,
+      "answered": 20,
+      "accuracy": 0.6,
+      "sir_i": 0.1,
+      "sir": 0.1,
+      "injected_total": 20,
+      "stale_injected": 2,
+      "tokens_mean": 8.35,
+      "tokens_p95": 16,
+      "llm_calls": 0
+    },
+    "nolifecycle": {
+      "n": 20,
+      "answered": 20,
+      "accuracy": 0.6,
+      "sir_i": 0.1,
+      "sir": 0.1,
+      "injected_total": 20,
+      "stale_injected": 2,
+      "tokens_mean": 10.9,
+      "tokens_p95": 22,
+      "llm_calls": 0
+    },
+    "foresight": {
+      "n": 20,
+      "answered": 20,
+      "accuracy": 0.9,
+      "sir_i": 0.14285714285714285,
+      "sir": 0.1,
+      "injected_total": 14,
+      "stale_injected": 2,
+      "tokens_mean": 7.95,
+      "tokens_p95": 22,
+      "llm_calls": 0
+    }
+  },
+  "pairs": [
+    {
+      "pair": [
+        "foresight",
+        "nolifecycle"
+      ],
+      "paired_items": 20,
+      "mcnemar": {
+        "a_only_correct": 6,
+        "b_only_correct": 0,
+        "both_correct": 12,
+        "both_wrong": 2
+      },
+      "odds_ratio": null,
+      "mcnemar_p": 0.031250000000000014,
+      "accuracy_diff": {
+        "mean": 0.3,
+        "ci95": [
+          0.1,
+          0.5
+        ],
+        "n": 20
+      },
+      "sir_i_diff": {
+        "mean": 0,
+        "ci95": [
+          0,
+          0
+        ],
+        "n": 20
+      }
+    },
+    {
+      "pair": [
+        "foresight",
+        "recency"
+      ],
+      "paired_items": 20,
+      "mcnemar": {
+        "a_only_correct": 6,
+        "b_only_correct": 0,
+        "both_correct": 12,
+        "both_wrong": 2
+      },
+      "odds_ratio": null,
+      "mcnemar_p": 0.031250000000000014,
+      "accuracy_diff": {
+        "mean": 0.3,
+        "ci95": [
+          0.1,
+          0.5
+        ],
+        "n": 20
+      },
+      "sir_i_diff": {
+        "mean": 0,
+        "ci95": [
+          0,
+          0
+        ],
+        "n": 20
+      }
+    }
+  ]
+}
