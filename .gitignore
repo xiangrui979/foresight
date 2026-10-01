@@ -5,3 +5,9 @@ node_modules/
 *.db-wal
 *.log
 .env
+
+# eval artifacts
+eval/data/
+eval/results/raw/
+eval/results/*.tmp
+
