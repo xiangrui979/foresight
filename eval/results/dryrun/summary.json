@@ -1,0 +1,125 @@
+{
+  "generated_at": "2026-10-01T15:32:37.997Z",
+  "traces": [
+    "eval/results/dryrun/traces.jsonl"
+  ],
+  "summary": {
+    "foresight": {
+      "n": 3,
+      "answered": 3,
+      "accuracy": 0.6666666666666666,
+      "sir_i": 0,
+      "sir": 0,
+      "injected_total": 9,
+      "stale_injected": 0,
+      "tokens_mean": 28,
+      "tokens_p95": 28,
+      "llm_calls": 0
+    },
+    "nolifecycle": {
+      "n": 3,
+      "answered": 3,
+      "accuracy": 0.6666666666666666,
+      "sir_i": 0,
+      "sir": 0,
+      "injected_total": 9,
+      "stale_injected": 0,
+      "tokens_mean": 28,
+      "tokens_p95": 28,
+      "llm_calls": 0
+    },
+    "recency": {
+      "n": 3,
+      "answered": 3,
+      "accuracy": 0.6666666666666666,
+      "sir_i": 0,
+      "sir": 0,
+      "injected_total": 9,
+      "stale_injected": 0,
+      "tokens_mean": 18,
+      "tokens_p95": 18,
+      "llm_calls": 0
+    },
+    "rag": {
+      "n": 3,
+      "answered": 3,
+      "accuracy": 0.3333333333333333,
+      "sir_i": 0,
+      "sir": 0,
+      "injected_total": 6,
+      "stale_injected": 0,
+      "tokens_mean": 12,
+      "tokens_p95": 12,
+      "llm_calls": 0
+    },
+    "summary": {
+      "n": 3,
+      "answered": 3,
+      "accuracy": 0,
+      "sir_i": 0,
+      "sir": 0,
+      "injected_total": 3,
+      "stale_injected": 0,
+      "tokens_mean": 37,
+      "tokens_p95": 37,
+      "llm_calls": 0
+    },
+    "fullcontext": {
+      "n": 3,
+      "answered": 3,
+      "accuracy": 0,
+      "sir_i": 0,
+      "sir": 0,
+      "injected_total": 9,
+      "stale_injected": 0,
+      "tokens_mean": 37,
+      "tokens_p95": 37,
+      "llm_calls": 0
+    },
+    "closedbook": {
+      "n": 3,
+      "answered": 3,
+      "accuracy": 0.3333333333333333,
+      "sir_i": null,
+      "sir": 0,
+      "injected_total": 0,
+      "stale_injected": 0,
+      "tokens_mean": 0,
+      "tokens_p95": 0,
+      "llm_calls": 0
+    }
+  },
+  "pairs": [
+    {
+      "pair": [
+        "foresight",
+        "recency"
+      ],
+      "paired_items": 3,
+      "mcnemar": {
+        "a_only_correct": 0,
+        "b_only_correct": 0,
+        "both_correct": 2,
+        "both_wrong": 1
+      },
+      "odds_ratio": null,
+      "mcnemar_p": 1,
+      "accuracy_diff": {
+        "mean": 0,
+        "ci95": [
+          0,
+          0
+        ],
+        "n": 3
+      },
+      "sir_i_diff": {
+        "mean": 0,
+        "ci95": [
+          0,
+          0
+        ],
+        "n": 3
+      }
+    }
+  ]
+}

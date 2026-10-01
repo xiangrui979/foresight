@@ -336,9 +336,9 @@ async function runDryRun(opts) {
   })
   const ctx = { policy, store, embed, clock, reader, countTokens: count, budgetTokens, history, llm: null }
   const items = [
-    { id: 'dry-1', q: '训练任务', now: base },
-    { id: 'dry-2', q: '用户身份', now: base },
-    { id: 'dry-3', q: '下一阶段迭代', now: base },
+    { id: 'dry-1', q: '训练任务', now: base, groundTruth: '训练任务在跑' },
+    { id: 'dry-2', q: '用户身份', now: base, groundTruth: '研究生' },
+    { id: 'dry-3', q: '下一阶段迭代', now: base, groundTruth: null },
   ]
   const names = opts.system ? [opts.system] : SYSTEM_NAMES
   const traces = []
@@ -398,7 +398,10 @@ async function runDryRun(opts) {
         budget_tokens: budgetTokens,
         injected_tokens: r.injected_tokens,
         answer: r.answer,
-        correct: null,
+        correct:
+          item.groundTruth === null
+            ? r.injected.length === 0
+            : r.injected.map((i) => i.content).join(' ').includes(item.groundTruth),
         judge: null,
         versions: baseVersions(policy, tokenizerId),
         cost: { llm_calls: r.calls, prompt_tokens: 0, completion_tokens: 0, cny: 0, cache_hit: false },

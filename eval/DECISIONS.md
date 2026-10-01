@@ -303,6 +303,7 @@
 | 2026-10-01 | pre-reg-v1.7 | Task 1.5：消融开关（`lifecycle.enabled` / `activation.conflict_enabled` / `gate.classifier`）走 policy + 单测；插件侧 token 预算（`injection.memories_budget_tokens`，`src/tokens.ts` 单一估算器）+ eval `render-budget.mjs`；7 系统（foresight/nolifecycle/recency/rag/summary/fullcontext/closedbook）；`runner --dry-run` 21 条 trace 校验通过 |
 | 2026-10-01 | pre-reg-v1.8 | Task 1.6：`adapters/SPEC.md` 冻结（隔离/抽取/双角色/UTC/探针/答案/泄漏/stale）；`lib/stale.mjs` `rules@v1` 自检通过；三基准 adapter + golden 各 5/5 自动核对；`extract.mjs` 抽取器接口冻结；人工签核在 G1 前完成 |
 | 2026-10-01 | pre-reg-v1.9 | Task 1.7：基准拉取完成 — LME cleaned（MIT，rev 98d7416c，s SHA256 `d6f21ea9…` 与上游独立记录一致；KU=78、abstention=30 实测确认）；LoCoMo（CC BY-NC 4.0 实测；1986 QA，cat2=321/cat5=446）；`--check` 全绿；数据仅本地 `eval/data/`（gitignore，不再分发）；LME-M（~2.7GB）留待 C-extension |
+| 2026-10-01 | pre-reg-v1.10 | Task 1.8：评分器 `eval/score.mjs` + 统计骨架 `eval/lib/stats.mjs`（McNemar exact / paired bootstrap CI / Holm / BH / 效应量 / seeded，自检通过）；输出 JSON+markdown+10 条人工抽查样本；对 dry-run 产出 foresight vs recency 配对表（D18：20 题 smoke 表在 1.10 替换）；人工抽查 10 条待签核 |
 | 2026-10-01 | pre-reg-v1.3 | Task 0.6 补测：seed 支持性探针实测完成（`deepseek-v4-flash`，seed=0 重放 3 次：`outputs_identical=false`、无接口错误 → `seed_effective`）；§4 回填；归档 `eval/results/seed-probe_deepseek-v4-flash.json`；C-extension 维持 seed 方案、§11.1 不变；Deviations「无 API key 未实测」偏离消解 |
 
 ## Deviations
