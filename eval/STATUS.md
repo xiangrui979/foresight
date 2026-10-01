@@ -7,7 +7,7 @@
 
 | Gate | 判据 | 状态 |
 |---|---|---|
-| G0（P0 末） | 预注册提交；CI 绿；分类器默认+切换规则冻结；seed 支持性入档；风险签字 | 🟡 条件性通过（预注册/分类器已冻结；CI 远端首跑、seed 实测 pending） |
+| G0（P0 末） | 预注册提交；CI 绿；分类器默认+切换规则冻结；seed 支持性入档；风险签字 | 🟡 条件性通过（预注册/分类器已冻结；seed 已入档；CI 12/12 全绿 2026-10-01）；待关闭：风险签字 |
 | G1（P1 末） | smoke 7/7；golden 5/5；机制修复 C1–C11 通过；成本误差 <15%；C5 终审；stale 抽检 ≥90% | ⬜ |
 | G2（P2 pilot 末） | 仿真功效完成；样本量/扩样决策落 DECISIONS；judge 人审 ≥80% | ⬜ |
 | G3（P2 末） | 矩阵无缺失格；`--no-cache` 双跑 Δ 报告；κ ≥0.7 | ⬜ |
@@ -20,7 +20,7 @@
 | Task | 状态 | commit | 备注 |
 |---|---|---|---|
 | 0.1 预注册 DECISIONS.md | ✅ | `141057e` | pre-reg-v1；含 C-extension 段 / stale_gt 协议 / decorative 清单 |
-| 0.2 测试命令 + pin Node + CI | ✅ | `ce8b628` | `node --test`；`.nvmrc=24`；CI {ubuntu,windows}×{20,22,24}×{UTC,Asia/Shanghai}（远端首跑待验证） |
+| 0.2 测试命令 + pin Node + CI | ✅ | `ce8b628` | `node --test`；`.nvmrc=24`；CI {ubuntu,windows}×{20,22,24}×{UTC,Asia/Shanghai}；首跑修复两轮后 12/12 全绿（2026-10-01，run `36879528894`） |
 | 0.3 trace schema v2 + STATUS | ✅ | `36a163f` | schema + `lib/trace.mjs`（validate/SIR 复算）+ 3 条样例；修复 `/lib/` 误忽略 eval/lib |
 | 0.4 eval 脚手架 | ✅ | `a1cfbb2` | runner --help / configs / eval README / artifact ignores |
 | 0.5 成本模型骨架 | ✅ | `7961719` | budget.mjs / cost.mjs / fullcontext 入模（tokensPerCall.reader）/ 双跑 ×2；自检通过 |
@@ -44,4 +44,4 @@
 | 项 | 影响 | 处理 |
 |---|---|---|
 | `DEEPSEEK_API_KEY` 环境依赖 | P1.4 judge/LLM 基建真实调用 | P0.6 seed 补测已完成（2026-10-01 临时注入）；P1 真实调用前需确认 key 供应 |
-| CI 远端首跑未验证 | G0「CI 绿」待确认 | 下次 push 后检查 12 个矩阵 job |
+| CI 远端首跑未验证（已解决） | ✅ G0「CI 绿」已确认 | 2026-10-01：两轮修复后 12/12 全绿（run `36879528894`）；pnpm@10.34.6（`295dd1c`）+ Windows node-gyp@12.4.0（`16a520e`） |
