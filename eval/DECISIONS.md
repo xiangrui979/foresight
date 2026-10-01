@@ -216,7 +216,7 @@
 ## 12. stale_gt 标注协议（D14）
 
 - **定义**：对知识更新类查询，注入证据若包含「更新前的旧值」（pretraining/历史值）即标 `stale_gt=true`，并附 `stale_reason`（如 `pre_update_value`、`superseded_anchor_expired`）。
-- **标注器**：`eval/lib/stale.mjs`，**规则优先**（更新前答案匹配 + 人工抽检），版本冻结（`rules@v1`，Task 1.6 交付时定稿版本号）。
+- **标注器**：`eval/lib/stale.mjs`，**规则优先**（更新前答案匹配 + 人工抽检）；版本冻结为 **`rules@v1`**（P1.6 交付，文件名/常量即版本；自检通过）。
 - **抽检**：≥30 条双轮抽检，一致率 **≥90%**；<90% 触发复核/重标。
 - **留档**：标注器版本写入 `trace.versions.stale_annotator`；公开基准 stale 辅证结果必须附一致率；一致率不达标时 H1 公开基准辅证降级为探索性。
 - **禁止**：标注器不得读取答案字段以外信息用于记忆侧写入（泄漏控制，见 Task 1.6 SPEC）。
@@ -301,6 +301,7 @@
 | 2026-10-01 | pre-reg-v1.5 | Task 1.3：trace 写入器 + token 计数（estimate@v1）+ 预算护栏接入 runner；`--selfcheck` 5 题离线端到端（真实 Store/search/render + ManualClock），运行时 SIR-i/SIR 与 `trace.mjs --sir` 复算一致（0.3333/0.2000） |
 | 2026-10-01 | pre-reg-v1.6 | Task 1.4：LLM 内容哈希缓存 + `--no-cache` + 退避重试 + usage 记账（`eval/lib/llm.mjs`）；judge 冻结机制（文件名 hash 前缀强制校验、篡改检测、可插拔）+ 官方 judge prompt 冻结 `eval/judge/42d5fff0-judge-correctness.md`（judge_id `gpt-4o@42d5fff0dcb3`） |
 | 2026-10-01 | pre-reg-v1.7 | Task 1.5：消融开关（`lifecycle.enabled` / `activation.conflict_enabled` / `gate.classifier`）走 policy + 单测；插件侧 token 预算（`injection.memories_budget_tokens`，`src/tokens.ts` 单一估算器）+ eval `render-budget.mjs`；7 系统（foresight/nolifecycle/recency/rag/summary/fullcontext/closedbook）；`runner --dry-run` 21 条 trace 校验通过 |
+| 2026-10-01 | pre-reg-v1.8 | Task 1.6：`adapters/SPEC.md` 冻结（隔离/抽取/双角色/UTC/探针/答案/泄漏/stale）；`lib/stale.mjs` `rules@v1` 自检通过；三基准 adapter + golden 各 5/5 自动核对；`extract.mjs` 抽取器接口冻结；人工签核在 G1 前完成 |
 | 2026-10-01 | pre-reg-v1.3 | Task 0.6 补测：seed 支持性探针实测完成（`deepseek-v4-flash`，seed=0 重放 3 次：`outputs_identical=false`、无接口错误 → `seed_effective`）；§4 回填；归档 `eval/results/seed-probe_deepseek-v4-flash.json`；C-extension 维持 seed 方案、§11.1 不变；Deviations「无 API key 未实测」偏离消解 |
 
 ## Deviations
