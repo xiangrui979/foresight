@@ -17,6 +17,18 @@ import { fileURLToPath } from 'node:url'
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 export const SCHEMA_PATH = path.resolve(HERE, '..', 'schema', 'trace.schema.json')
 
+/** Append one trace as a JSONL line (creates parent dirs). */
+export function appendTrace(file, trace) {
+  fs.mkdirSync(path.dirname(path.resolve(file)), { recursive: true })
+  fs.appendFileSync(file, JSON.stringify(trace) + '\n')
+}
+
+/** Overwrite a JSONL file with traces. */
+export function writeTraces(file, traces) {
+  fs.mkdirSync(path.dirname(path.resolve(file)), { recursive: true })
+  fs.writeFileSync(file, traces.map((t) => JSON.stringify(t)).join('\n') + '\n')
+}
+
 export function loadTraces(file) {
   const text = fs.readFileSync(file, 'utf8')
   if (file.endsWith('.jsonl')) {

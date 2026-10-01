@@ -1,26 +1,44 @@
 #!/usr/bin/env node
 /**
- * ForeSight eval runner (P0.4 脚手架; 实际执行在 P1.3 接线).
+ * ForeSight eval runner.
  *
- * 预注册见 eval/DECISIONS.md；trace schema 见 eval/schema/trace.schema.json。
+ * P0.4 scaffold + P1.3 selfcheck: `--selfcheck` runs 5 deterministic
+ * timesuite-style items against the real Store/search/render layers
+ * (offline; FakeEmbedProvider + ManualClock), writes trace v2 JSONL,
+ * validates it, and recomputes SIR-i/SIR for cross-checking with
+ * `node eval/lib/trace.mjs --sir`.
+ *
+ * Full benchmark execution (`--bench --system`) lands in P1.5/P1.6.
  */
+import * as fs from 'node:fs'
+import * as os from 'node:os'
 import * as path from 'node:path'
+import { execSync } from 'node:child_process'
+import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 
 export const BENCHES = ['longmemeval', 'locomo', 'timesuite', 'smoke']
 export const SYSTEMS = ['foresight', 'nolifecycle', 'recency', 'rag', 'summary', 'fullcontext', 'closedbook']
 
+const DAY = 86_400_000
+const HERE = path.dirname(fileURLToPath(import.meta.url))
+
 export function usage() {
-  return `ForeSight eval runner (P0.4 scaffold)
+  return `ForeSight eval runner
 
 用法:
   node eval/runner.mjs --bench <name> --system <name> --config <file> --out <file> [options]
+  node eval/runner.mjs --selfcheck [--out <file>]
 
-必选:
+必选 (bench 运行):
   --bench <name>        数据集: ${BENCHES.join(' | ')}
   --system <name>       系统: ${SYSTEMS.join(' | ')}
   --config <file>       eval 配置 (如 eval/configs/foresight-full.yaml)
   --out <file>          结果输出 (trace JSONL)
+
+自检 (P1.3，离线可跑):
+  --selfcheck           5 题端到端自检: 真实 Store/search/render + trace v2 + SIR 复算
+  --out <file>          自检输出 (默认 eval/results/selfcheck/traces.jsonl)
 
 运行控制:
   --variant <v>         LME 变体: s | m | oracle (默认 s; C-extension 预留)
@@ -58,6 +76,7 @@ const SCHEMA = {
   'drive-nudge': { kind: 'flag' },
   estimate: { kind: 'flag' },
   'dry-run': { kind: 'flag' },
+  selfcheck: { kind: 'flag' },
   help: { kind: 'flag' },
   h: { kind: 'flag' },
 }
@@ -82,7 +101,196 @@ export function parseArgs(argv) {
   return opts
 }
 
-function main(argv) {
+// ── P1.3 selfcheck ──────────────────────────────────────────────────
+
+function gitCommitCwd() {
+  try {
+    return execSync('git rev-parse --short HEAD', { cwd: HERE, stdio: ['ignore', 'pipe', 'ignore'] })
+      .toString()
+      .trim()
+  } catch {
+    return 'selfcheck-local'
+  }
+}
+
+async function runSelfCheck(opts) {
+  const { ManualClock } = await import('../lib/clock.js')
+  const { openDatabase, closeDatabase } = await import('../lib/schema.js')
+  const { Store } = await import('../lib/store.js')
+  const { FakeEmbedProvider } = await import('../lib/store/embed.js')
+  const { loadPolicy } = await import('../lib/policy.js')
+  const { search } = await import('../lib/retrieve/search.js')
+  const { renderMemories } = await import('../lib/inject/render.js')
+  const { loadTokenizer } = await import('./lib/tokens.mjs')
+  const { validateTraces, sir, writeTraces } = await import('./lib/trace.mjs')
+  const { guardEstimate, Ledger } = await import('./lib/budget.mjs')
+
+  const base = Date.parse('2026-01-01T00:00:00Z')
+  const clock = new ManualClock(base)
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'foresight-selfcheck-'))
+  fs.copyFileSync(fileURLToPath(new URL('../templates/policy.yaml.example', import.meta.url)), path.join(dir, 'policy.yaml'))
+  const policy = loadPolicy(path.join(dir, 'policy.yaml'))
+  const schema = openDatabase(path.join(dir, 'selfcheck.db'))
+  const store = new Store(schema, null, clock)
+  const fake = new FakeEmbedProvider(768)
+  const act = policy.activation.base_weights.agent ?? 1
+
+  const mk = (content, aspect, anchor, extra = {}) =>
+    store.insertMemory({ content, aspect, anchor, source: 'agent', activation: act, ...extra })
+  const running = mk('训练任务在跑', 'progressive', { type: 'none' })
+  const future = mk('下一阶段迭代从 2026-03-01 开始', 'progressive', { type: 'interval', start: '2026-03-01', end: '2026-03-10' })
+  const current = mk('用户是研究生', 'perfect', { type: 'point', start: '2025-12-01' }, { embedding: await fake.embedOne('用户 研究生 学历') })
+  const stale = mk('用户是大学生', 'perfect', { type: 'point', start: '2025-03-01' }, { embedding: await fake.embedOne('用户 大学生 学历') })
+
+  /** Render-path injection (system_prompt channel): progressive active, inside window. */
+  const renderInjected = (now) => {
+    const text = renderMemories(store, policy, new Date(now))
+    const lines = text.split('\n').filter(Boolean)
+    return store
+      .listByAspectStatus('progressive', 'active')
+      .filter((m) => lines.some((l) => l.includes(m.content)))
+      .map((m) => m.id)
+  }
+
+  const items = [
+    {
+      id: 'selfcheck-1',
+      at: base,
+      channel: 'system_prompt',
+      q: '渲染：进行中',
+      staleIds: new Set(),
+      injectedIds: () => renderInjected(base),
+      check: (ids) => ids.has(running.id) && !ids.has(future.id),
+      expect: 'running injected; future-start hidden (C10)',
+    },
+    {
+      id: 'selfcheck-2',
+      at: base + 8 * DAY,
+      channel: 'system_prompt',
+      q: '渲染：TTL 过期',
+      staleIds: new Set([running.id]),
+      injectedIds: () => renderInjected(base + 8 * DAY),
+      check: (ids) => !ids.has(running.id),
+      expect: 'expired progressive hidden (C1/C2)',
+    },
+    {
+      id: 'selfcheck-3',
+      at: base,
+      channel: 'tool_retrieval',
+      q: '用户身份 学历',
+      staleIds: new Set([stale.id]),
+      injectedIds: async () => {
+        const hits = await search('用户身份 学历', store, fake, policy, base, { topK: 2 })
+        return hits.map((h) => h.id)
+      },
+      check: (ids) => ids.has(current.id),
+      expect: 'current fact retrieved; stale value carries stale_gt',
+    },
+    {
+      id: 'selfcheck-4',
+      at: base + 100 * DAY,
+      channel: 'system_prompt',
+      q: '渲染：全部过期后',
+      staleIds: new Set(),
+      injectedIds: () => renderInjected(base + 100 * DAY),
+      check: (ids) => ids.size === 0,
+      expect: 'all progressive expired → empty injection',
+    },
+    {
+      id: 'selfcheck-5',
+      at: base,
+      channel: 'system_prompt',
+      q: '渲染：已完成事实不应进系统提示',
+      staleIds: new Set([stale.id, current.id]),
+      injectedIds: () => renderInjected(base),
+      check: (ids) => !ids.has(stale.id) && !ids.has(current.id),
+      expect: 'perfect memories never in system-prompt section',
+    },
+  ]
+
+  const { id: tokenizerId, count } = await loadTokenizer()
+  const repoCommit = gitCommitCwd()
+  const configHash = createHash('sha256').update(JSON.stringify(policy)).digest('hex').slice(0, 16)
+  const ledger = new Ledger()
+  const traces = []
+
+  for (const item of items) {
+    const t0 = Date.now()
+    const ids = await item.injectedIds()
+    const retrieveMs = Date.now() - t0
+    const all = [running, future, current, stale]
+    const injected = all
+      .filter((m) => ids.includes(m.id))
+      .map((m) => ({
+        memory_id: m.id,
+        aspect: m.aspect,
+        anchor_type: m.anchor.type,
+        status: store.getMemory(m.id).status,
+        expires_at_ms: null,
+        suppressed_by: null,
+        stale_gt: item.staleIds.has(m.id),
+        stale_reason: item.staleIds.has(m.id) ? (m.id === stale.id ? 'pre_update_value' : 'ttl_expired') : null,
+        created_at_ms: m.createdAt,
+        age_days: Math.round(((item.at - m.createdAt) / DAY) * 10) / 10,
+        score: 1,
+        tokens: count(m.content),
+        included: true,
+      }))
+    traces.push({
+      run_id: `selfcheck-${repoCommit}-${item.id}`,
+      system: 'selfcheck',
+      bench: 'smoke',
+      variant: 'selfcheck',
+      item_id: item.id,
+      query: item.q,
+      query_time_ms: item.at,
+      channel: item.channel,
+      injected,
+      candidate_count: injected.length,
+      budget_tokens: 2000,
+      injected_tokens: injected.reduce((a, b) => a + b.tokens, 0),
+      answer: injected.length > 0 ? injected.map((i) => i.memory_id).join(',') : '（无相关记忆）',
+      correct: item.check(new Set(ids)),
+      judge: null,
+      versions: {
+        repo_commit: repoCommit,
+        policy_version: policy.policy_version,
+        config_hash: configHash,
+        node: process.version,
+        embed_model: 'FakeEmbedProvider@768',
+        llm_model: 'none (offline selfcheck)',
+        tokenizer: tokenizerId,
+        seed: 0,
+        stale_annotator: 'rules@v1 (selfcheck)',
+      },
+      cost: { llm_calls: 0, prompt_tokens: 0, completion_tokens: 0, cny: 0, cache_hit: false },
+      timing_ms: { ingest: 0, retrieve: retrieveMs, answer: 0 },
+    })
+    ledger.add(item.id, { cny: 0, calls: 0 })
+  }
+
+  const out = opts.out ?? path.join(HERE, 'results', 'selfcheck', 'traces.jsonl')
+  writeTraces(out, traces)
+  const errors = validateTraces(traces)
+  if (errors.length > 0) {
+    console.error(`✘ selfcheck trace 校验失败 (${errors.length}):`)
+    for (const e of errors.slice(0, 10)) console.error(`  ${e}`)
+    closeDatabase(schema)
+    return 1
+  }
+  const runtime = sir(traces)
+  const guard = guardEstimate(ledger.totals())
+  console.log(`✔ selfcheck: ${traces.length} 条 trace 校验通过 → ${out}`)
+  console.log(`  注入条数=${runtime.injected_total}  stale=${runtime.stale_injected}  SIR-i=${runtime.sir_i.toFixed(4)}  SIR=${runtime.sir.toFixed(4)}`)
+  console.log(`  ${ledger.report()} · guard=${guard.ok ? 'ok' : guard.violations.join('; ')}`)
+  console.log('  复算: node eval/lib/trace.mjs --validate <out> && node eval/lib/trace.mjs --sir <out>')
+  closeDatabase(schema)
+  return 0
+}
+
+// ── main ────────────────────────────────────────────────────────────
+
+async function main(argv) {
   let opts
   try {
     opts = parseArgs(argv)
@@ -95,6 +303,14 @@ function main(argv) {
     console.log(usage())
     return 0
   }
+  if (opts.selfcheck) {
+    try {
+      return await runSelfCheck(opts)
+    } catch (e) {
+      console.error('✘ selfcheck 异常:', e)
+      return 1
+    }
+  }
   for (const req of ['bench', 'system', 'config', 'out']) {
     if (!opts[req]) {
       console.error(`✘ 缺少必选参数 --${req}`)
@@ -102,11 +318,12 @@ function main(argv) {
       return 2
     }
   }
-  console.error('runner 尚未实现（P0.4 脚手架）：执行逻辑将在 P1.3 接线。')
-  console.error(`解析结果: ${JSON.stringify(opts)}`)
+  console.error('真实 bench 运行需要 systems/adapters（P1.5/P1.6）；当前可用 --selfcheck。')
   return 2
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  process.exitCode = main(process.argv.slice(2))
+  main(process.argv.slice(2)).then((code) => {
+    process.exitCode = code
+  })
 }
