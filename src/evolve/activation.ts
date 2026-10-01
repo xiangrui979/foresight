@@ -25,7 +25,7 @@
  */
 import type { Policy } from '../policy.js'
 import type { Memory, Store } from '../store.js'
-import { progressiveWindow } from './temporal.js'
+import { lifecycleEnabled, progressiveWindow } from './temporal.js'
 
 /** Directional sign contribution of each rel for its endpoints (src=claimant). */
 const REL_SIGN: Record<string, { src: number; dst: number }> = {
@@ -99,6 +99,7 @@ export function baseWeightFor(policy: Policy, m: Memory): number {
 
 /** temporal_factor: progressive in-window=1 / out=0; others 1. */
 export function temporalFactor(policy: Policy, m: Memory, now: number): number {
+  if (!lifecycleEnabled(policy)) return 1
   if (m.aspect !== 'progressive') return 1
   const w = progressiveWindow(policy, m)
   if (w.endMs === null) return 1

@@ -122,6 +122,7 @@ export class ConflictResolver {
 
   async resolveOnWrite(n: Memory, now = this.clock.now()): Promise<ConflictResolution> {
     const cfg = this.policy.activation
+    if (cfg.conflict_enabled === false) return { checked: false, conflicts: [] }
     if (!n.embedding) return { checked: false, conflicts: [] }
     const vec = toF32(n.embedding)
     const neighbors = this.store.vectorNeighbors(vec, this.policy.retrieval.candidates)

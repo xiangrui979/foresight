@@ -66,6 +66,8 @@ export interface Policy {
     forbidden_progressive: string[]
     llm_model: string
     fallback: string
+    /** 'rules' = A 方案（默认，0 LLM 调用）；'llm' = B 方案；缺省 = 兼容旧行为。 */
+    classifier?: 'rules' | 'llm'
   }
   activation: {
     beta: number
@@ -75,12 +77,16 @@ export interface Policy {
     temporal_decay_enabled: boolean
     half_life_days: number
     base_weights: Record<string, number>
+    /** Eval ablation switch: false → conflict resolution skipped on write. */
+    conflict_enabled?: boolean
     support?: {
       evidence_half_life_days: number
       margin: number
       aspect_direction_prior: number
     }
   }
+  /** Eval ablation switch: false → no lifecycle (nolifecycle baseline). */
+  lifecycle?: { enabled?: boolean }
   retrieval: {
     top_k: number
     min_score: number
@@ -92,6 +98,8 @@ export interface Policy {
     user_section: string
     memories_section: string
     user_budget_chars: number
+    /** H3: plugin-side injection token budget; 0/absent = unlimited. */
+    memories_budget_tokens?: number
   }
   derive: {
     enabled: boolean

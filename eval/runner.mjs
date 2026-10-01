@@ -49,7 +49,7 @@ export function usage() {
   --no-cache            禁用内容哈希缓存 (主表双跑强制)
   --drive-nudge         由 runner 驱动 turn 计数与 nudge (未然体验证路径)
   --estimate            估算调用数与成本, 不执行
-  --dry-run             只做装配与 3 条样例冒烟, 不调用 LLM
+  --dry-run             7 系统 × 3 条合成样例离线冒烟 (P1.5; 可配 --system 单跑)
 
 其他:
   --help, -h            显示本帮助
@@ -110,6 +110,24 @@ function gitCommitCwd() {
       .trim()
   } catch {
     return 'selfcheck-local'
+  }
+}
+
+function hashPolicy(policy) {
+  return createHash('sha256').update(JSON.stringify(policy)).digest('hex').slice(0, 16)
+}
+
+function baseVersions(policy, tokenizerId, { embedModel = 'FakeEmbedProvider@768', llmModel = 'none (offline)', staleAnnotator = 'rules@v1' } = {}) {
+  return {
+    repo_commit: gitCommitCwd(),
+    policy_version: policy.policy_version,
+    config_hash: hashPolicy(policy),
+    node: process.version,
+    embed_model: embedModel,
+    llm_model: llmModel,
+    tokenizer: tokenizerId,
+    seed: 0,
+    stale_annotator: staleAnnotator,
   }
 }
 
@@ -210,7 +228,6 @@ async function runSelfCheck(opts) {
 
   const { id: tokenizerId, count } = await loadTokenizer()
   const repoCommit = gitCommitCwd()
-  const configHash = createHash('sha256').update(JSON.stringify(policy)).digest('hex').slice(0, 16)
   const ledger = new Ledger()
   const traces = []
 
@@ -252,17 +269,7 @@ async function runSelfCheck(opts) {
       answer: injected.length > 0 ? injected.map((i) => i.memory_id).join(',') : '（无相关记忆）',
       correct: item.check(new Set(ids)),
       judge: null,
-      versions: {
-        repo_commit: repoCommit,
-        policy_version: policy.policy_version,
-        config_hash: configHash,
-        node: process.version,
-        embed_model: 'FakeEmbedProvider@768',
-        llm_model: 'none (offline selfcheck)',
-        tokenizer: tokenizerId,
-        seed: 0,
-        stale_annotator: 'rules@v1 (selfcheck)',
-      },
+      versions: baseVersions(policy, tokenizerId, { llmModel: 'none (offline selfcheck)', staleAnnotator: 'rules@v1 (selfcheck)' }),
       cost: { llm_calls: 0, prompt_tokens: 0, completion_tokens: 0, cny: 0, cache_hit: false },
       timing_ms: { ingest: 0, retrieve: retrieveMs, answer: 0 },
     })
@@ -288,6 +295,136 @@ async function runSelfCheck(opts) {
   return 0
 }
 
+// ── P1.5 dry-run: 7 systems × 3 synthetic items, offline ────────────
+
+async function runDryRun(opts) {
+  const { ManualClock } = await import('../lib/clock.js')
+  const { openDatabase, closeDatabase } = await import('../lib/schema.js')
+  const { Store } = await import('../lib/store.js')
+  const { FakeEmbedProvider } = await import('../lib/store/embed.js')
+  const { loadPolicy } = await import('../lib/policy.js')
+  const { loadTokenizer } = await import('./lib/tokens.mjs')
+  const { validateTraces, writeTraces } = await import('./lib/trace.mjs')
+  const { SYSTEM_FACTORIES, SYSTEM_NAMES } = await import('./systems/index.mjs')
+
+  const base = Date.parse('2026-01-01T00:00:00Z')
+  const clock = new ManualClock(base)
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'foresight-dryrun-'))
+  fs.copyFileSync(fileURLToPath(new URL('../templates/policy.yaml.example', import.meta.url)), path.join(dir, 'policy.yaml'))
+  const policy = loadPolicy(path.join(dir, 'policy.yaml'))
+  const schema = openDatabase(path.join(dir, 'dryrun.db'))
+  const store = new Store(schema, null, clock)
+  const embed = new FakeEmbedProvider(768)
+  const act = policy.activation.base_weights.agent ?? 1
+  const mk = (content, aspect, anchor, extra = {}) =>
+    store.insertMemory({ content, aspect, anchor, source: 'agent', activation: act, ...extra })
+  mk('训练任务在跑', 'progressive', { type: 'none' })
+  mk('用户是研究生', 'perfect', { type: 'point', start: '2025-12-01' }, { embedding: await embed.embedOne('用户 研究生') })
+  mk('用户是大学生', 'perfect', { type: 'point', start: '2025-03-01' }, { embedding: await embed.embedOne('用户 大学生') })
+  const history = [
+    { peer: 'user', content: '我们决定采用双通道方案', createdAt: base - 3 * DAY },
+    { peer: 'assistant', content: '好的，已记录双通道方案', createdAt: base - 3 * DAY + 1000 },
+    { peer: 'user', content: '论文初稿已经完成', createdAt: base - 2 * DAY },
+  ]
+  for (const h of history) store.insertConversation('dryrun', h.peer, h.content)
+
+  const { id: tokenizerId, count } = await loadTokenizer()
+  const budgetTokens = Number(opts['budget-tokens'] ?? 0) || 2000
+  const reader = async ({ injected }) => ({
+    answer: injected.length > 0 ? injected.map((i) => i.content).join(' / ') : '（闭卷）',
+    calls: 0,
+  })
+  const ctx = { policy, store, embed, clock, reader, countTokens: count, budgetTokens, history, llm: null }
+  const items = [
+    { id: 'dry-1', q: '训练任务', now: base },
+    { id: 'dry-2', q: '用户身份', now: base },
+    { id: 'dry-3', q: '下一阶段迭代', now: base },
+  ]
+  const names = opts.system ? [opts.system] : SYSTEM_NAMES
+  const traces = []
+  for (const name of names) {
+    const factory = SYSTEM_FACTORIES[name]
+    if (!factory) {
+      console.error(`✘ 未知 system: ${name}`)
+      closeDatabase(schema)
+      return 2
+    }
+    let sys
+    try {
+      sys = factory(ctx)
+    } catch (e) {
+      console.error(`✘ ${name} 装配失败: ${e.message}`)
+      closeDatabase(schema)
+      return 1
+    }
+    for (const item of items) {
+      let r
+      try {
+        r = await sys.query({ query: item.q, now: item.now })
+      } catch (e) {
+        console.error(`✘ ${name}/${item.id} 运行失败: ${e.message}`)
+        closeDatabase(schema)
+        return 1
+      }
+      const injected = r.injected.map((i) => {
+        const m = store.getMemory(i.memory_id)
+        return {
+          memory_id: i.memory_id,
+          aspect: m?.aspect ?? 'perfect',
+          anchor_type: m?.anchor?.type ?? 'none',
+          status: m?.status ?? 'active',
+          expires_at_ms: null,
+          suppressed_by: null,
+          stale_gt: false,
+          stale_reason: null,
+          created_at_ms: m?.createdAt ?? item.now,
+          age_days: 0,
+          score: 1,
+          tokens: i.tokens,
+          included: true,
+        }
+      })
+      traces.push({
+        run_id: `dryrun-${baseVersions(policy, tokenizerId).repo_commit}-${name}-${item.id}`,
+        system: name,
+        bench: 'timesuite',
+        variant: 'dryrun',
+        item_id: `${name}-${item.id}`,
+        query: item.q,
+        query_time_ms: item.now,
+        channel: r.channel,
+        injected,
+        candidate_count: injected.length,
+        budget_tokens: budgetTokens,
+        injected_tokens: r.injected_tokens,
+        answer: r.answer,
+        correct: null,
+        judge: null,
+        versions: baseVersions(policy, tokenizerId),
+        cost: { llm_calls: r.calls, prompt_tokens: 0, completion_tokens: 0, cny: 0, cache_hit: false },
+        timing_ms: { ingest: 0, retrieve: 0, answer: 0 },
+      })
+    }
+  }
+
+  const out = opts.out ?? path.join(HERE, 'results', 'dryrun', 'traces.jsonl')
+  writeTraces(out, traces)
+  const errors = validateTraces(traces)
+  if (errors.length > 0) {
+    console.error(`✘ dry-run trace 校验失败 (${errors.length}):`)
+    for (const e of errors.slice(0, 10)) console.error(`  ${e}`)
+    closeDatabase(schema)
+    return 1
+  }
+  console.log(`✔ dry-run: ${names.length} 系统 × ${items.length} 题 = ${traces.length} trace → ${out}`)
+  for (const name of names) {
+    const mine = traces.filter((t) => t.system === name)
+    console.log(`  ${name.padEnd(12)} injected=${mine.reduce((a, t) => a + t.injected.length, 0)} tokens=${mine.reduce((a, t) => a + t.injected_tokens, 0)}`)
+  }
+  closeDatabase(schema)
+  return 0
+}
+
 // ── main ────────────────────────────────────────────────────────────
 
 async function main(argv) {
@@ -308,6 +445,14 @@ async function main(argv) {
       return await runSelfCheck(opts)
     } catch (e) {
       console.error('✘ selfcheck 异常:', e)
+      return 1
+    }
+  }
+  if (opts['dry-run']) {
+    try {
+      return await runDryRun(opts)
+    } catch (e) {
+      console.error('✘ dry-run 异常:', e)
       return 1
     }
   }

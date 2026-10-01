@@ -148,6 +148,7 @@
 | tokenizer | 目标 `cl100k_base`；本机未安装 tiktoken → 实际 `estimate@v1`（偏离已登记；若安装须 Changelog 并评估影响） |
 | config_hash | runner 每条结果记录（全部配置序列化 hash） |
 | retrieval.factors 权重 | `embed 0.4 / time 0.2 / activation 0.25 / links 0.15`（P1.2 冻结；主实验前不得更改） |
+| 注入预算 | 插件侧 `injection.memories_budget_tokens`（0=不限）；eval 统一 `render-budget.mjs` + 同一 token counter；3 档见 §5 |
 | 价格表 | 见 §10（执行日复核，差异入 Changelog） |
 
 ---
@@ -299,6 +300,7 @@
 | 2026-10-01 | pre-reg-v1.4 | Task 1.2：检索因子名对齐（embed/time/activation/links）+ 权重冻结（0.40/0.20/0.25/0.15）；`render_anchor` 值域接线（true/short/always/endpoint）；§13 decorative 清单定稿（全 policy 表面审计） |
 | 2026-10-01 | pre-reg-v1.5 | Task 1.3：trace 写入器 + token 计数（estimate@v1）+ 预算护栏接入 runner；`--selfcheck` 5 题离线端到端（真实 Store/search/render + ManualClock），运行时 SIR-i/SIR 与 `trace.mjs --sir` 复算一致（0.3333/0.2000） |
 | 2026-10-01 | pre-reg-v1.6 | Task 1.4：LLM 内容哈希缓存 + `--no-cache` + 退避重试 + usage 记账（`eval/lib/llm.mjs`）；judge 冻结机制（文件名 hash 前缀强制校验、篡改检测、可插拔）+ 官方 judge prompt 冻结 `eval/judge/42d5fff0-judge-correctness.md`（judge_id `gpt-4o@42d5fff0dcb3`） |
+| 2026-10-01 | pre-reg-v1.7 | Task 1.5：消融开关（`lifecycle.enabled` / `activation.conflict_enabled` / `gate.classifier`）走 policy + 单测；插件侧 token 预算（`injection.memories_budget_tokens`，`src/tokens.ts` 单一估算器）+ eval `render-budget.mjs`；7 系统（foresight/nolifecycle/recency/rag/summary/fullcontext/closedbook）；`runner --dry-run` 21 条 trace 校验通过 |
 | 2026-10-01 | pre-reg-v1.3 | Task 0.6 补测：seed 支持性探针实测完成（`deepseek-v4-flash`，seed=0 重放 3 次：`outputs_identical=false`、无接口错误 → `seed_effective`）；§4 回填；归档 `eval/results/seed-probe_deepseek-v4-flash.json`；C-extension 维持 seed 方案、§11.1 不变；Deviations「无 API key 未实测」偏离消解 |
 
 ## Deviations
@@ -308,3 +310,4 @@
 | 2026-10-01 | seed 支持性实测未执行（无 API key） | 环境无 `DEEPSEEK_API_KEY` | C-extension 跨种子方案待定 | `eval/scripts/seed-probe.mjs` 待 key 就绪后补测并回填 §4/§11.1 |
 | 2026-10-01 | （消解）seed 支持性实测补测完成：探针已执行并回填 §4 | 环境 key 临时注入提供 | 原偏离无遗留影响 | 已执行 `eval/scripts/seed-probe.mjs`；归档见 §4 |
 | 2026-10-01 | H3 token 计数使用 `estimate@v1` 估算器（非冻结的 cl100k_base） | tiktoken 未安装；本地 pnpm 11.22 与 CI pin（10.34.6）版本线冲突，安装会扰动 lockfile | 所有系统使用同一 counter → 等预算与相对比较有效；绝对 token 预算为估算口径 | P1.5 统一预算渲染沿用同一 counter；若安装 tiktoken 精确计数须在 Changelog 登记并评估对已产结果的影响 |
+| 2026-10-01 | **D17 混合口径**：插件侧预算已实现（`renderMemories` 读 `injection.memories_budget_tokens`），但 eval 的 ForeSight `tool_retrieval` 通道仍由 eval 统一渲染器（`render-budget.mjs`，同 counter）截断 shipped search 结果 | 单一实现优先项①对 system_prompt 通道成立；tool 检索通道的 shipped 路径无预算参数，强行下沉会改动检索契约 | H3 主报告按 `channel`（system_prompt vs tool_retrieval）分层；跨系统同 counter 同预算仍有效 | 论文显式声明该评估口径；Task 4.2 披露；若下沉 tool 通道预算则登记 changelog 并重跑 H3 |

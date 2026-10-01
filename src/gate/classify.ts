@@ -54,6 +54,9 @@ export interface LlmCaller {
 
 export function buildClassifyFn(policy: Policy, llm: LlmCaller | null): ClassifyFn {
   return async ({ now, text }): Promise<ClassifyResult | null> => {
+    // Eval classifier switch (C5/DECISIONS §15): 'rules' = A (zero LLM);
+    // 'llm' = B; undefined = legacy behavior (LLM when available).
+    if (policy.gate.classifier === 'rules') return classifyByRules(policy, now, text)
     if (llm) {
       try {
         const resp = await llm.call({

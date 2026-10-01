@@ -19,6 +19,7 @@ import type { Store } from '../store.js'
 import type { Policy, Anchor } from '../policy.js'
 import { normalizeClock, type ClockLike } from '../clock.js'
 import { lifecycleEligible, sweepExpired } from '../evolve/temporal.js'
+import { estimateTokens } from '../tokens.js'
 
 export interface RenderDeps {
   store: Store
@@ -26,6 +27,15 @@ export interface RenderDeps {
   memoryRoot: string
   now?: Date
   clock?: ClockLike
+  /** H3 override; defaults to policy.injection.memories_budget_tokens. */
+  budgetTokens?: number
+  /** Token counter override (eval uses its frozen counter). */
+  countTokens?: (text: string) => number
+}
+
+export interface RenderMemoriesOptions {
+  budgetTokens?: number
+  countTokens?: (text: string) => number
 }
 
 export interface RenderResult {
@@ -80,7 +90,7 @@ export function renderAnchorSuffix(content: string, anchor: Anchor): string {
  * memories render: sweep lifecycle first (C1), then progressive(active)
  * rows inside their valid-time window (C10) → one per line.
  */
-export function renderMemories(store: Store, policy: Policy, now: Date): string {
+export function renderMemories(store: Store, policy: Policy, now: Date, opts: RenderMemoriesOptions = {}): string {
   const nowMs = now.getTime()
   sweepExpired(store, policy, nowMs)
   const rows = store.listByAspectStatus('progressive', 'active')
@@ -90,7 +100,18 @@ export function renderMemories(store: Store, policy: Policy, now: Date): string 
     if (!lifecycleEligible(policy, m, nowMs)) continue
     lines.push(renderAnchorSuffix(m.content, m.anchor))
   }
-  return lines.join('\n')
+  const budget = Number(opts.budgetTokens ?? policy.injection?.memories_budget_tokens ?? 0)
+  if (!(budget > 0)) return lines.join('\n')
+  const count = opts.countTokens ?? estimateTokens
+  const kept: string[] = []
+  let used = 0
+  for (const line of lines) {
+    const t = count(line)
+    if (used + t > budget) continue
+    used += t
+    kept.push(line)
+  }
+  return kept.join('\n')
 }
 
 /** Three-section render (pure). */
@@ -99,7 +120,10 @@ export function renderSections(deps: RenderDeps): RenderResult {
   return {
     soul: readTextFile(deps.memoryRoot, 'SOUL.md'),
     user: readTextFile(deps.memoryRoot, 'user.md'),
-    memories: renderMemories(deps.store, deps.policy, now),
+    memories: renderMemories(deps.store, deps.policy, now, {
+      budgetTokens: deps.budgetTokens,
+      countTokens: deps.countTokens,
+    }),
   }
 }
 
@@ -127,6 +151,8 @@ export function registerSections(ctx: unknown, deps: RenderDeps): () => void {
               policy: deps.policy,
               memoryRoot: deps.memoryRoot,
               clock: deps.clock,
+              budgetTokens: deps.budgetTokens,
+              countTokens: deps.countTokens,
             })
           ),
       }) as () => void

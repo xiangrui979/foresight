@@ -61,8 +61,14 @@ export function progressiveWindow(policy: Policy, m: Memory): ExpiryWindow {
   return { startMs, endMs, reason: 'anchor' }
 }
 
+/** Eval ablation switch (template `lifecycle.enabled`): false → no lifecycle. */
+export function lifecycleEnabled(policy: Policy): boolean {
+  return policy.lifecycle?.enabled !== false
+}
+
 /** Expiry check: mechanical time comparison; perfect/prospective always active. */
 export function expireCheck(policy: Policy, m: Memory, now: number): 'expired' | 'active' {
+  if (!lifecycleEnabled(policy)) return 'active'
   if (m.aspect !== 'progressive') return 'active'
   const w = progressiveWindow(policy, m)
   if (w.endMs === null) return 'active'
@@ -71,6 +77,7 @@ export function expireCheck(policy: Policy, m: Memory, now: number): 'expired' |
 
 /** Renewal reminder: active renewable progressive within window → true. */
 export function renewalDue(policy: Policy, m: Memory, now: number): boolean {
+  if (!lifecycleEnabled(policy)) return false
   if (m.aspect !== 'progressive' || m.status !== 'active') return false
   if (!(policy.aspects.progressive?.renewable ?? false)) return false
   const w = progressiveWindow(policy, m)
@@ -100,6 +107,7 @@ export function applyExpiry(store: Store, policy: Policy, m: Memory, now: number
 
 /** Sweep all active progressive entries (call before injection render). */
 export function sweepExpired(store: Store, policy: Policy, now: number): string[] {
+  if (!lifecycleEnabled(policy)) return []
   const out: string[] = []
   for (const m of store.listByAspectStatus('progressive', 'active')) {
     if (applyExpiry(store, policy, m, now)) out.push(m.id)
@@ -115,6 +123,7 @@ export function sweepExpired(store: Store, policy: Policy, now: number): string[
  * perfect/prospective/gnomic are time-unbounded → always eligible.
  */
 export function lifecycleEligible(policy: Policy, m: Memory, now: number): boolean {
+  if (!lifecycleEnabled(policy)) return true
   if (m.aspect !== 'progressive') return true
   const w = progressiveWindow(policy, m)
   if (w.startMs !== null && now < w.startMs) return false
