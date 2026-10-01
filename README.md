@@ -130,7 +130,7 @@ cp templates/policy.yaml.example ~/.config/foresight/policy.yaml
 | embed URL | `FORESIGHT_EMBED_URL` | `http://localhost:11434` |
 | embed model | `FORESIGHT_EMBED_MODEL` | `nomic-embed-text-v2-moe` |
 | LLM base URL | `FORESIGHT_LLM_BASE_URL` | `https://api.deepseek.com/v1` |
-| LLM model | `FORESIGHT_LLM_MODEL` | `deepseek-v4-flash` |
+| LLM model | `FORESIGHT_LLM_MODEL` | `deepseek-flash` |
 
 ### Policy file
 

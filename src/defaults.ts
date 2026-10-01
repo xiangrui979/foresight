@@ -24,7 +24,7 @@ export const DEFAULT_SERVER_PORT = 9288
 
 /** LLM provider for classification/derivation/dialectic. */
 export const DEFAULT_LLM_BASE_URL = 'https://api.deepseek.com/v1'
-export const DEFAULT_LLM_MODEL = 'deepseek-v4-flash'
+export const DEFAULT_LLM_MODEL = 'deepseek-flash'
 export const DEFAULT_LLM_TIMEOUT_MS = 60_000
 export const DEFAULT_LLM_MAX_RETRIES = 2
 

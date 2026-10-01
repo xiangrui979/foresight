@@ -68,7 +68,7 @@ foresight:
     allowed_categories: ['session_log', 'task_progress', 'environment', 'project_state', 'preference', 'rule']
     forbidden_categories: ['guessing', 'speculation']
     forbidden_progressive: ['project_state']
-    llm_model: 'deepseek-v4-flash'
+    llm_model: 'deepseek-flash'
     fallback: 'rules'
     # 'rules' = 方案 A（默认，零 LLM 调用）；'llm' = 方案 B（每 turn 一次分类调用）。
     # 终审规则见 eval/DECISIONS.md §15。
@@ -117,7 +117,7 @@ foresight:
     enabled: true
     trigger: 'turn'
     every_n_turns: 20
-    model: 'deepseek-v4-flash'
+    model: 'deepseek-flash'
     max_new_per_batch: 4
     routes:
       - source: 'history'
@@ -138,7 +138,7 @@ foresight:
     every_turns: 10
     candidate_extraction: 'rules'
     candidate_max: 3
-    llm_model: 'deepseek-v4-flash'
+    llm_model: 'deepseek-flash'
     render: 'dialog'
     review_temporal: true
     review_conflicts: true
@@ -156,9 +156,9 @@ foresight:
 
   llm:
     base_url: 'https://api.deepseek.com/v1'
-    model_classify: 'deepseek-v4-flash'
-    model_derive: 'deepseek-v4-flash'
-    model_dialectic: 'deepseek-v4-flash'
+    model_classify: 'deepseek-flash'
+    model_derive: 'deepseek-flash'
+    model_dialectic: 'deepseek-flash'
     timeout_ms: 60000
     max_retries: 2
 

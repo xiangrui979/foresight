@@ -4,7 +4,7 @@
  *
  * 对 reader / judge 模型：同一 prompt + seed 重放 N 次，比较输出与 usage。
  * 用法：
- *   node eval/scripts/seed-probe.mjs --model deepseek-v4-flash
+ *   node eval/scripts/seed-probe.mjs --model deepseek-flash
  *   node eval/scripts/seed-probe.mjs --model gpt-4o --endpoint https://api.openai.com/v1 --api-key-env OPENAI_API_KEY
  *
  * 退出码：0 探针完成；2 用法错误；3 缺少 API key；1 网络/接口错误。
@@ -23,7 +23,7 @@ function usage() {
   node eval/scripts/seed-probe.mjs [options]
 
 选项:
-  --model <name>         被测模型（默认 FORESIGHT_LLM_MODEL 或 deepseek-v4-flash）
+  --model <name>         被测模型（默认 FORESIGHT_LLM_MODEL 或 deepseek-flash）
   --endpoint <url>       OpenAI 兼容 endpoint（默认 FORESIGHT_LLM_BASE_URL 或 https://api.deepseek.com/v1）
   --api-key-env <VAR>    API key 环境变量名（默认 DEEPSEEK_API_KEY）
   --seed <int>           种子（默认 0）
@@ -34,7 +34,7 @@ function usage() {
 
 function parseArgs(argv) {
   const opts = {
-    model: process.env.FORESIGHT_LLM_MODEL || 'deepseek-v4-flash',
+    model: process.env.FORESIGHT_LLM_MODEL || 'deepseek-flash',
     endpoint: (process.env.FORESIGHT_LLM_BASE_URL || 'https://api.deepseek.com/v1').replace(/\/+$/, ''),
     apiKeyEnv: 'DEEPSEEK_API_KEY',
     seed: 0,

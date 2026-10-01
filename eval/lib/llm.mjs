@@ -47,7 +47,7 @@ export class LlmClient {
   constructor(opts = {}) {
     this.baseUrl = (opts.baseUrl ?? process.env.FORESIGHT_LLM_BASE_URL ?? 'https://api.deepseek.com/v1').replace(/\/+$/, '')
     this.apiKey = opts.apiKey ?? process.env.DEEPSEEK_API_KEY ?? null
-    this.model = opts.model ?? process.env.FORESIGHT_LLM_MODEL ?? 'deepseek-v4-flash'
+    this.model = opts.model ?? process.env.FORESIGHT_LLM_MODEL ?? 'deepseek-flash'
     this.cacheDir = opts.cacheDir ?? path.resolve(process.env.EVAL_CACHE_DIR ?? path.join(process.cwd(), 'eval', '.cache', 'llm'))
     this.noCache = opts.noCache ?? false
     this.maxRetries = opts.maxRetries ?? 2

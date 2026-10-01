@@ -101,9 +101,9 @@
 
 ## 4. 判定协议（reader / judge）
 
-- **Reader**：`deepseek-v4-flash`（冻结），temperature 0；reader prompt 冻结并记录 hash（Task 1.4）。
+- **Reader**：`deepseek-flash`（冻结，2026-10-01 用户指令全局改名；原名 `deepseek-v4-flash`），temperature 0；reader prompt 冻结并记录 hash（Task 1.4）。
 - **Judge（冻结）**：主 judge = `gpt-4o`（LME 官方 `evaluate_qa.py` 默认，与 reader 不同源）。
-  - **不可得时（预注册兜底）**：改用 `deepseek-v4-flash` 同源 judge，登记 deviation，主表附人类子集敏感性分析，并**触发 C-extension 双 judge**。
+  - **不可得时（预注册兜底）**：改用 `deepseek-flash` 同源 judge，登记 deviation，主表附人类子集敏感性分析，并**触发 C-extension 双 judge**。
   - judge prompt 一文件一版本（文件名带 hash 前缀）；模型 + prompt hash 写入每条 trace 的 `judge.judge_id/prompt_hash`。
 - **人审**：分层抽 ≥120 条双盲标注，计算 κ（目标 **≥0.7**）与 per-stratum 一致率 + **AC1**。
   - κ ∈ [0.6, 0.7)：主表附人类子集敏感性分析 + 触发 C-extension 双 judge；
@@ -141,7 +141,7 @@
 | policy_version | `3` |
 | Node | pin 24（`.nvmrc`）；CI 矩阵 20/22/24；实验记录 `24.11.1` |
 | Ollama | `nomic-embed-text-v2-moe`（tag + digest 于 Task 1.7/执行日回填） |
-| DeepSeek reader | `deepseek-v4-flash`（temperature 0） |
+| DeepSeek reader | `deepseek-flash`（temperature 0；2026-10-01 由 `deepseek-v4-flash` 改名） |
 | Judge | `gpt-4o`（不同源；兜底见 §4） |
 | judge prompt hash | 冻结文件 `eval/judge/42d5fff0-judge-correctness.md`（sha256 `42d5fff0dcb3…`）；`judge_id = gpt-4o@42d5fff0dcb3`（文件名前缀 = 内容 hash8，`judge.mjs` 强制校验） |
 | reader prompt hash | Task 1.4 冻结并回填 |
@@ -178,7 +178,7 @@
 
 | 模型 | 输入 ¥/1M tokens | 输出 ¥/1M tokens | 记录日期 |
 |---|---|---|---|
-| deepseek-v4-flash | 待执行日抄录 | 待执行日抄录 | - |
+| deepseek-flash | 待执行日抄录 | 待执行日抄录 | - |
 | gpt-4o（judge） | 待执行日抄录 | 待执行日抄录 | - |
 
 - runner `--estimate` 先行；`RUNLOG.md` 每单元对账（含双跑 ×2）。
@@ -304,6 +304,7 @@
 | 2026-10-01 | pre-reg-v1.8 | Task 1.6：`adapters/SPEC.md` 冻结（隔离/抽取/双角色/UTC/探针/答案/泄漏/stale）；`lib/stale.mjs` `rules@v1` 自检通过；三基准 adapter + golden 各 5/5 自动核对；`extract.mjs` 抽取器接口冻结；人工签核在 G1 前完成 |
 | 2026-10-01 | pre-reg-v1.9 | Task 1.7：基准拉取完成 — LME cleaned（MIT，rev 98d7416c，s SHA256 `d6f21ea9…` 与上游独立记录一致；KU=78、abstention=30 实测确认）；LoCoMo（CC BY-NC 4.0 实测；1986 QA，cat2=321/cat5=446）；`--check` 全绿；数据仅本地 `eval/data/`（gitignore，不再分发）；LME-M（~2.7GB）留待 C-extension |
 | 2026-10-01 | pre-reg-v1.10 | Task 1.8：评分器 `eval/score.mjs` + 统计骨架 `eval/lib/stats.mjs`（McNemar exact / paired bootstrap CI / Holm / BH / 效应量 / seeded，自检通过）；输出 JSON+markdown+10 条人工抽查样本；对 dry-run 产出 foresight vs recency 配对表（D18：20 题 smoke 表在 1.10 替换）；人工抽查 10 条待签核 |
+| 2026-10-01 | pre-reg-v1.11 | 全局改名（用户指令）：reader/LLM 默认模型名 `deepseek-v4-flash` → **`deepseek-flash`**（`src/defaults.ts`、templates、README、eval 脚本/样例 trace、DECISIONS §4/§7/§10）；无既有主实验结果受影响；P0.6 seed 探针归档与历史记录保留原模型名以如实留痕 |
 | 2026-10-01 | pre-reg-v1.3 | Task 0.6 补测：seed 支持性探针实测完成（`deepseek-v4-flash`，seed=0 重放 3 次：`outputs_identical=false`、无接口错误 → `seed_effective`）；§4 回填；归档 `eval/results/seed-probe_deepseek-v4-flash.json`；C-extension 维持 seed 方案、§11.1 不变；Deviations「无 API key 未实测」偏离消解 |
 
 ## Deviations
