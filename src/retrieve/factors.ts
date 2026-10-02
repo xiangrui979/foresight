@@ -8,6 +8,7 @@
  */
 import type { Memory, Store } from '../store.js'
 import type { Policy } from '../policy.js'
+import { blobToF32 } from '../f32.js'
 
 const MS_PER_DAY = 86_400_000
 
@@ -29,9 +30,9 @@ function clamp01(v: number): number {
   return Math.max(0, Math.min(1, v))
 }
 
-/** memories.embedding BLOB → Float32Array (Buffer may carry byteOffset). */
-export function bufferToVec(buf: Buffer): Float32Array {
-  return new Float32Array(buf.buffer, buf.byteOffset, buf.byteLength / 4)
+/** memories.embedding BLOB → Float32Array (alignment-safe across drivers). */
+export function bufferToVec(buf: Uint8Array): Float32Array {
+  return blobToF32(buf)
 }
 
 export function cosine(a: Float32Array, b: Float32Array): number {

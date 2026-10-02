@@ -1,7 +1,7 @@
 /**
- * ForeSight Store â€?CRUD over the four tables, soft delete, vector writes.
+ * ForeSight Store â€” CRUD over the four tables, soft delete, vector writes.
  * All writes funnel through this module (Node is single-threaded and
- * better-sqlite3 is synchronous, so writes are naturally serialized).
+ * node:sqlite is synchronous, so writes are naturally serialized).
  */
 import type { Schema } from './schema.js'
 import type { Anchor, Aspect, MemorySource, MemoryStatus, LinkRel } from './types.js'
@@ -23,7 +23,7 @@ export interface Memory {
   sourceRef: string | null
   status: MemoryStatus
   metadata: Record<string, unknown>
-  embedding: Buffer | null
+  embedding: Uint8Array | null
   createdAt: number
   updatedAt: number
 }
@@ -59,7 +59,7 @@ function rowToMemory(r: Record<string, unknown>): Memory {
     sourceRef: (r.source_ref as string) ?? null,
     status: r.status as MemoryStatus,
     metadata: JSON.parse((r.metadata as string) || '{}') as Record<string, unknown>,
-    embedding: (r.embedding as Buffer) ?? null,
+    embedding: (r.embedding as Uint8Array) ?? null,
     createdAt: r.created_at as number,
     updatedAt: r.updated_at as number,
   }
@@ -125,7 +125,7 @@ export class Store {
     patch: Partial<Pick<Memory, 'content' | 'activation' | 'baseWeight' | 'status' | 'metadata' | 'aspect' | 'anchor' | 'category' | 'telicity' | 'modality'>>,
   ): Memory | null {
     const fields: string[] = []
-    const values: Record<string, unknown> = { id, updated_at: this.clock.now() }
+    const values: Record<string, string | number | null> = { id, updated_at: this.clock.now() }
     if (patch.content !== undefined) { fields.push('content = @content'); values.content = patch.content }
     if (patch.aspect !== undefined) { fields.push('aspect = @aspect'); values.aspect = patch.aspect }
     if (patch.anchor !== undefined) { fields.push('anchor_json = @anchor_json'); values.anchor_json = JSON.stringify(patch.anchor) }

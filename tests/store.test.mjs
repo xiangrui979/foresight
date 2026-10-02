@@ -27,7 +27,7 @@ test('schema: open creates tables and stays idempotent', () => {
   // idempotent reopen
   closeDatabase(s1)
   const s2 = openDatabase(p)
-  const v = s2.db.pragma('user_version', { simple: true })
+  const v = s2.db.prepare('PRAGMA user_version').get().user_version
   assert.equal(v, 1)
   closeDatabase(s2)
 })

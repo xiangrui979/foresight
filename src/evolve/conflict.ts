@@ -17,6 +17,7 @@ import type { Aspect, MemoryStatus, Policy } from '../types.js'
 import type { Memory, Store } from '../store.js'
 import { computeActivation, evidence } from './activation.js'
 import { normalizeClock, systemClock, type Clock, type ClockLike } from '../clock.js'
+import { blobToF32 } from '../f32.js'
 
 export type ConflictJudge = (n: Memory, o: Memory) => boolean | Promise<boolean>
 
@@ -32,10 +33,10 @@ export function aspectsConflict(nAspect: Aspect, oAspect: Aspect): boolean {
   return false
 }
 
-function embeddingCosine(a: Buffer, b: Buffer): number {
-  const n = Math.floor(a.byteLength / 4)
-  const va = new Float32Array(a.buffer, a.byteOffset, n)
-  const vb = new Float32Array(b.buffer, b.byteOffset, n)
+function embeddingCosine(a: Uint8Array, b: Uint8Array): number {
+  const va = blobToF32(a)
+  const vb = blobToF32(b)
+  const n = Math.min(va.length, vb.length)
   let dot = 0
   let na = 0
   let nb = 0
@@ -199,8 +200,8 @@ function round2(v: number): number {
   return Math.round(v * 100) / 100
 }
 
-function toF32(buf: Buffer): Float32Array {
-  return new Float32Array(buf.buffer, buf.byteOffset, buf.byteLength / 4)
+function toF32(buf: Uint8Array): Float32Array {
+  return blobToF32(buf)
 }
 
 /** Manual cosine similarity (vec0 default L2 metric — distance is NOT cosine). */

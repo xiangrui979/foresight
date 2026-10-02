@@ -8,24 +8,28 @@
  *   conversations raw session messages (twice FTS-indexed)
  *   events        append-only audit trail
  * Plus two FTS5 shadow tables and one sqlite-vec vec0 virtual table.
+ *
+ * SQLite access: built-in `node:sqlite` (no native module -- runs identically
+ * under plain Node and the Electron runtime; sqlite-vec loaded as an extension).
  */
-import Database from 'better-sqlite3'
+import { DatabaseSync } from 'node:sqlite'
 import * as sqliteVec from 'sqlite-vec'
 import * as fs from 'node:fs'
 import * as path from 'node:path'
 import { EMBED_DIM } from './defaults.js'
 
 export interface Schema {
-  db: Database.Database
+  db: DatabaseSync
   dbPath: string
 }
 
 /** Open (or create) the database, apply DDL, load sqlite-vec. Idempotent. */
 export function openDatabase(dbPath: string): Schema {
   fs.mkdirSync(path.dirname(dbPath), { recursive: true })
-  const db = new Database(dbPath)
-  db.pragma('journal_mode = WAL')
-  db.pragma('foreign_keys = ON')
+  const db = new DatabaseSync(dbPath, { allowExtension: true })
+  db.exec('PRAGMA journal_mode = WAL')
+  db.exec('PRAGMA foreign_keys = ON')
+  db.enableLoadExtension(true)
   db.loadExtension(sqliteVec.getLoadablePath())
   migrate(db)
   return { db, dbPath }
@@ -97,11 +101,11 @@ CREATE VIRTUAL TABLE IF NOT EXISTS memories_vec USING vec0(
 `
 
 /** Migrate: idempotent DDL, version recorded in PRAGMA user_version. */
-function migrate(db: Database.Database): void {
-  const current = db.pragma('user_version', { simple: true }) as number
+function migrate(db: DatabaseSync): void {
+  const current = (db.prepare('PRAGMA user_version').get() as { user_version: number }).user_version
   if (current < 1) {
     db.exec(DDL)
-    db.pragma('user_version = 1')
+    db.exec('PRAGMA user_version = 1')
   }
 }
 

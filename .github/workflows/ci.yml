@@ -13,27 +13,18 @@ jobs:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest]
-        node: ['20', '22', '24']
+        node: ['22', '24']
         tz: ['UTC', 'Asia/Shanghai']
     env:
       TZ: ${{ matrix.tz }}
     steps:
       - uses: actions/checkout@v4
-      # pnpm 版本来自 packageManager pin；用 10.x 线兼容 node20 矩阵（pnpm 11 要求 node>=22.13）
+      # pnpm 版本来自 packageManager pin
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
           cache: pnpm
-      # Windows：runner 为 VS2026（VS18），node-gyp 需 >=12.1 才能识别（pnpm 自带的 11.5 不能）；
-      # node20 无 better-sqlite3 预编译包（已 EOL），需源码编译 → 显式指定新版 node-gyp。
-      - name: node-gyp@12.4.0 (Windows / VS2026, for node20 native builds)
-        if: runner.os == 'Windows'
-        shell: bash
-        run: |
-          npm install -g node-gyp@12.4.0 --no-audit --no-fund
-          NGR="$(npm root -g | tr -d '\r\n')"
-          echo "npm_config_node_gyp=$NGR/node-gyp/bin/node-gyp.js" >> "$GITHUB_ENV"
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm test
