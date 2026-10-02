@@ -59,6 +59,7 @@ check('fts zh trigram query', () => db.prepare('select rowid from conversations_
 check('fts en query', () => db.prepare('select rowid from conversations_fts where conversations_fts match ? limit 3').all('test').length)
 check('knn self-match on real data', () => {
   const row = db.prepare('select id, embedding from memories_vec limit 1').get()
+  if (!row) return 'empty table (fresh db) — skipped'
   const hits = db.prepare('select id, distance from memories_vec where embedding match ? order by distance limit 3').all(row.embedding)
   return `n=${hits.length} top=${hits[0].id} distance=${hits[0].distance}`
 })
